@@ -227,47 +227,12 @@ const uiObserver = new MutationObserver(mutations => {
     });
   });
   
-  if (addedTargets) {
-    setTimeout(animateNumbers, 100);
-  }
 });
 
 uiObserver.observe(document.body, { childList: true, subtree: true });
 
-function animateNumbers() {
-  document.querySelectorAll(".score-card .value").forEach(el => {
-    if (el.dataset.animated) return;
-    const text = el.innerText;
-    const num = parseFloat(text.replace(/[^0-9.-]/g, ""));
-    if (!isNaN(num) && num !== 0) {
-      el.dataset.animated = "true";
-      const duration = 1500;
-      const startTime = performance.now();
-      const match = text.match(/[0-9.-]/);
-      const prefix = match ? text.substring(0, text.indexOf(match[0])) : "";
-      let suffixMatch = text.match(/[0-9.-]([^0-9.-]+)$/);
-      const suffix = suffixMatch ? suffixMatch[1] : (text.replace(/[0-9.-]/g,"") && !prefix ? text.replace(/[0-9.-]/g,"") : "");
-      
-      const isFloat = text.includes(".");
-      
-      function update(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easeOut = 1 - Math.pow(1 - progress, 3);
-        const current = num * easeOut;
-        
-        let displayVal = isFloat ? current.toFixed(1) : Math.floor(current);
-        if (progress === 1) displayVal = text.replace(/[^0-9.-]/g, "");
-        el.innerText = (prefix || "") + displayVal + (suffix || "");
-        
-        if (progress < 1) requestAnimationFrame(update);
-      }
-      requestAnimationFrame(update);
-    }
-  });
-}
 document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(animateNumbers, 500);
+  
   
   // Animate progress bars
   setTimeout(() => {

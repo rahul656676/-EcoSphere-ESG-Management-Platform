@@ -175,7 +175,7 @@ def generate_ai_summary(report_type, data):
         client = Groq(api_key=api_key)
         prompt = (
             "You are an ESG reporting assistant for the EcoSphere platform. "
-            f"Write a concise (3-4 sentence) executive summary of the following "
+            f"Write an extremely short and concise (1-2 sentence) executive summary of the following "
             f"{report_type} report JSON data. Be factual, do not invent numbers.\n\n"
             f"{json.dumps(data, default=str)[:6000]}"
         )
