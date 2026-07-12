@@ -59,6 +59,13 @@ function esc(str) {
   }[c]));
 }
 
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  if (sidebar) {
+    sidebar.classList.toggle("open");
+  }
+}
+
 function renderShell(activePage, pageTitle) {
   const sidebarHtml = NAV.map(sec => {
     const active = sec.href === activePage;
@@ -195,17 +202,25 @@ function sendAIChat() {
   input.value = "";
   body.scrollTop = body.scrollHeight;
 
-  setTimeout(() => {
-    const responses = [
-      "I've analyzed your recent emissions data. There's a 12% anomaly in Scope 2. Would you like me to generate a detailed report?",
-      "Based on current compliance trends, I recommend updating your diversity policy to align with the upcoming ISO standards.",
-      "Generating AI insights... Your optimal carbon reduction strategy involves shifting 15% of fleet to EV this quarter.",
-      "I can certainly help with that! Let me cross-reference our ESG framework guidelines."
-    ];
-    const reply = responses[Math.floor(Math.random() * responses.length)];
-    body.innerHTML += `<div class="ai-msg system">${reply}</div>`;
-    body.scrollTop = body.scrollHeight;
-  }, 1000);
+  const typingId = "typing-" + Date.now();
+  body.innerHTML += `<div id="${typingId}" class="ai-msg system muted">AI Copilot is thinking...</div>`;
+  body.scrollTop = body.scrollHeight;
+
+  api("/ai/chat", { method: "POST", body: { message: text } })
+    .then(res => {
+      document.getElementById(typingId).remove();
+      if (res && res.reply) {
+        body.innerHTML += `<div class="ai-msg system">${esc(res.reply)}</div>`;
+      } else {
+        body.innerHTML += `<div class="ai-msg system">Sorry, I couldn't process that.</div>`;
+      }
+      body.scrollTop = body.scrollHeight;
+    })
+    .catch(e => {
+      document.getElementById(typingId).remove();
+      body.innerHTML += `<div class="ai-msg system" style="color:var(--red);">Error connecting to AI: ${esc(e.message)}</div>`;
+      body.scrollTop = body.scrollHeight;
+    });
 }
 
 // Global animation helper for counter

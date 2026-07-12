@@ -175,13 +175,13 @@ def generate_ai_summary(report_type, data):
         client = Groq(api_key=api_key)
         prompt = (
             "You are an ESG reporting assistant for the EcoSphere platform. "
-            f"Write a concise (3-4 sentence) executive summary of the following "
+            f"Write an extremely short and concise (1-2 sentence) executive summary of the following "
             f"{report_type} report JSON data. Be factual, do not invent numbers.\n\n"
             f"{json.dumps(data, default=str)[:6000]}"
         )
         chat_completion = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama3-8b-8192",
+            model="llama-3.1-8b-instant",
             max_tokens=400,
         )
         return chat_completion.choices[0].message.content
@@ -232,9 +232,31 @@ def generate_ai_anomalies():
         )
         chat_completion = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama3-8b-8192",
+            model="llama-3.1-8b-instant",
             max_tokens=250,
         )
         return chat_completion.choices[0].message.content
     except Exception as exc:
         return "Offline Anomaly Detection: System operates nominally. API unreachable."
+
+def generate_ai_chat(message):
+    import os, json
+    api_key = os.environ.get("GROQ_API_KEY")
+    if not api_key or "your_groq_api_key_here" in api_key:
+        return f"Offline Copilot: Received '{message}'. Connect Groq API for full AI responses."
+    try:
+        from groq import Groq
+        client = Groq(api_key=api_key)
+        prompt = (
+            "You are an AI ESG Copilot for the EcoSphere platform. "
+            "Provide helpful sustainability insights. Keep answers under 3 sentences. "
+            f"User asks: {message}"
+        )
+        chat_completion = client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model="llama-3.1-8b-instant",
+            max_tokens=250,
+        )
+        return chat_completion.choices[0].message.content
+    except Exception as exc:
+        return "Offline Copilot: API Unreachable at the moment."
