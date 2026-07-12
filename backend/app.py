@@ -34,6 +34,42 @@ import controllers  # noqa: E402
 from auth import auth_bp, ensure_default_admin  # noqa: E402
 from routes import api  # noqa: E402
 
+"""
+EcoSphere - app.py
+Main Flask application entrypoint. Serves the REST API (routes.py, auth.py)
+and the static frontend pages (frontend/*.html).
+
+Run:
+    cd backend
+    python3 app.py
+Then open http://localhost:5000  (default login: admin / admin123)
+"""
+
+import os
+import sys
+import logging
+from dotenv import load_dotenv
+
+# Configure standard logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
+logger = logging.getLogger(__name__)
+
+# Load environment variables from .env file
+load_dotenv()
+
+from flask import Flask, send_from_directory, session, redirect, jsonify
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
+AI_DIR = os.path.join(BASE_DIR, "ai")
+
+sys.path.insert(0, AI_DIR)  # so routes.py can `import reports`
+
+import models  # noqa: E402
+import controllers  # noqa: E402
+from auth import auth_bp, ensure_default_admin  # noqa: E402
+from routes import api  # noqa: E402
+
 
 def create_app():
     app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path="")
@@ -41,6 +77,14 @@ def create_app():
     app.secret_key = os.environ.get("ECOSPHERE_SECRET_KEY") or os.urandom(24).hex()
 
     models.init_db()
+    
+    # Start the background cron scheduler after DB is initialized
+    try:
+        from scheduler import start_background_jobs
+        start_background_jobs()
+    except Exception as e:
+        logger.error(f"Failed to start scheduler: {e}")
+
     ensure_default_admin()
     controllers.recompute_department_scores()
     controllers.refresh_overdue_compliance_issues()
@@ -83,13 +127,6 @@ def create_app():
 
 
 app = create_app()
-
-# Start the background cron scheduler
-try:
-    from scheduler import start_background_jobs
-    start_background_jobs()
-except Exception as e:
-    logger.error(f"Failed to start scheduler: {e}")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

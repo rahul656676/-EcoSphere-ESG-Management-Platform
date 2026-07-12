@@ -86,11 +86,17 @@ function renderShell(activePage, pageTitle) {
       <span class="title">EcoSphere: ${pageTitle}</span>
     </div>
     <div class="right">
+      <button class="btn btn-outline" style="padding:4px 8px; margin-right:10px; font-size:12px;" onclick="toggleTheme()">🌓 Theme</button>
       <span id="whoami"></span>
       <button class="logout" onclick="logout()">Logout</button>
     </div>
   `;
   document.getElementById("tabs").innerHTML = tabsHtml;
+
+  // Apply saved theme
+  if (localStorage.getItem("ecoTheme") === "light") {
+    document.documentElement.setAttribute("data-theme", "light");
+  }
 
   api("/auth/me").then(me => {
     if (me && me.authenticated) {
@@ -139,6 +145,16 @@ function showPanel(name, btnEl, groupClass) {
 
 function toggleAIChat() {
   document.getElementById("ai-assistant-window").classList.toggle("open");
+}
+
+function toggleTheme() {
+  if (document.documentElement.getAttribute("data-theme") === "light") {
+    document.documentElement.removeAttribute("data-theme");
+    localStorage.setItem("ecoTheme", "dark");
+  } else {
+    document.documentElement.setAttribute("data-theme", "light");
+    localStorage.setItem("ecoTheme", "light");
+  }
 }
 
 function sendAIChat() {

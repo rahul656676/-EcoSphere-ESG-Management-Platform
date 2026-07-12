@@ -62,7 +62,7 @@ def init_db(force=False):
             fresh = True
         conn.close()
     else:
-        fresh = force or (not os.path.exists(DB_PATH))
+        fresh = force or (not os.path.exists(DB_PATH)) or (os.path.getsize(DB_PATH) == 0)
         if force and os.path.exists(DB_PATH):
             os.remove(DB_PATH)
 
