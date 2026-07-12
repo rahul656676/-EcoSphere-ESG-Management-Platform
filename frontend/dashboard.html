@@ -45,6 +45,16 @@
             <a class="btn btn-orange" href="gamification.html">🚀 Start Challenge</a>
             <a class="btn btn-dark" href="reports.html">📄 View Reports</a>
           </div>
+
+          <div class="card" style="grid-column: span 2; margin-top: 15px;">
+            <div class="flex-between">
+              <h4>✨ AI ESG Insights & Anomalies</h4>
+              <button class="btn btn-outline" style="font-size:12px;" onclick="fetchAiInsights()">Refresh</button>
+            </div>
+            <div id="aiInsightsBox" style="margin-top:10px; padding:12px; background:rgba(94,106,210,0.1); border-left:4px solid var(--primary); border-radius:4px; font-size:14px; line-height:1.5;">
+              <span class="muted">Loading predictive insights from AI Copilot...</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -52,61 +62,51 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="app.js"></script>
 <script>
-renderShell("dashboard.html", "Dashboard");
+renderShell("dashboard.html", "Organization Dashboard");
 
 function drawLineChart(canvasId, points) {
-  const canvas = document.getElementById(canvasId);
-  const ctx = canvas.getContext("2d");
-  const w = canvas.width = canvas.clientWidth;
-  const h = canvas.height = 160;
-  ctx.clearRect(0, 0, w, h);
-  if (!points.length) {
-    ctx.fillStyle = "#9ca3af"; ctx.fillText("No data yet", 10, 20); return;
-  }
-  const max = Math.max(...points.map(p => p.total_co2), 1);
-  const pad = 20;
-  const stepX = (w - pad * 2) / Math.max(points.length - 1, 1);
-  ctx.beginPath();
-  ctx.strokeStyle = "#5e6ad2";
-  ctx.lineWidth = 2;
-  points.forEach((p, i) => {
-    const x = pad + i * stepX;
-    const y = h - pad - (p.total_co2 / max) * (h - pad * 2);
-    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-  });
-  ctx.stroke();
-  ctx.fillStyle = "#5e6ad2";
-  points.forEach((p, i) => {
-    const x = pad + i * stepX;
-    const y = h - pad - (p.total_co2 / max) * (h - pad * 2);
-    ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
+  const ctx = document.getElementById(canvasId).getContext("2d");
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: points.map((_, i) => `T${i+1}`),
+      datasets: [{
+        data: points.map(p => p.total_co2),
+        borderColor: '#5e6ad2',
+        backgroundColor: 'rgba(94, 106, 210, 0.1)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
   });
 }
 
 function drawBarChart(canvasId, bars) {
-  const canvas = document.getElementById(canvasId);
-  const ctx = canvas.getContext("2d");
-  const w = canvas.width = canvas.clientWidth;
-  const h = canvas.height = 160;
-  ctx.clearRect(0, 0, w, h);
-  if (!bars.length) {
-    ctx.fillStyle = "#9ca3af"; ctx.fillText("No data yet", 10, 20); return;
-  }
-  const max = 100;
-  const pad = 20;
-  const barW = (w - pad * 2) / bars.length - 10;
-  bars.forEach((b, i) => {
-    const x = pad + i * ((w - pad * 2) / bars.length) + 5;
-    const barH = (b.total_score / max) * (h - pad * 2);
-    const y = h - pad - barH;
-    ctx.fillStyle = "#3b82f6";
-    ctx.fillRect(x, y, barW, barH);
-    ctx.fillStyle = "#94a3b8";
-    ctx.font = "10px sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText(b.department_name.slice(0, 6), x + barW / 2, h - 6);
+  const ctx = document.getElementById(canvasId).getContext("2d");
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: bars.map(b => b.department_name),
+      datasets: [{
+        data: bars.map(b => b.total_score),
+        backgroundColor: '#3b82f6'
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+  });
+}
+
+function fetchAiInsights() {
+  const box = document.getElementById("aiInsightsBox");
+  box.innerHTML = '<span class="muted">Loading predictive insights from AI Copilot...</span>';
+  api("/ai/insights").then(res => {
+    box.innerHTML = esc(res.insights);
+  }).catch(e => {
+    box.innerHTML = `<span class="red">Failed to load AI insights: ${esc(e.message)}</span>`;
   });
 }
 
@@ -129,6 +129,7 @@ async function load() {
         data.recent_activity.map(a => `<li style="margin-bottom:8px;">✔ ${esc(a.message)} <span class="muted">(${fmtDate(a.date)})</span></li>`).join("") +
         `</ul>`;
     }
+    fetchAiInsights();
   } catch (e) {
     toast(e.message, true);
   }

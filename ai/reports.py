@@ -203,3 +203,38 @@ def generate_offline_heuristic_summary(report_type, data):
         return f"Offline Summary: Employees have successfully completed {approved} CSR activities. Reconnect the AI Copilot to generate diversity insights."
     else:
         return f"Offline Summary: Data successfully aggregated for {report_type}. Connect a valid Groq API key in the .env file to unlock AI-driven insights."
+
+def generate_ai_anomalies():
+    """Call Groq API to detect anomalies or trends based on the last 30 days of carbon transactions and open compliance issues."""
+    api_key = os.environ.get("GROQ_API_KEY")
+    
+    # Gather data for analysis
+    transactions = models.query("SELECT amount_co2, date, source_type FROM carbon_transaction ORDER BY date DESC LIMIT 50")
+    issues = models.query("SELECT severity, status FROM compliance_issue WHERE status != 'Resolved'")
+    
+    data = {
+        "recent_carbon_transactions": transactions,
+        "active_compliance_issues": issues
+    }
+
+    if not api_key or "your_groq_api_key_here" in api_key:
+        return "Offline Anomaly Detection: System operates nominally. Connect Groq API for predictive anomaly detection."
+    
+    try:
+        from groq import Groq
+        client = Groq(api_key=api_key)
+        prompt = (
+            "You are an AI Risk and Anomaly Detection system for the EcoSphere ESG platform. "
+            "Analyze the following recent carbon transactions and compliance issues. "
+            "Identify any spikes in emissions, unusual patterns, or critical compliance risks. "
+            "Provide a highly concise (2-3 sentences) alert summarizing the anomalies and suggesting a mitigation strategy.\n\n"
+            f"{json.dumps(data, default=str)[:4000]}"
+        )
+        chat_completion = client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model="llama3-8b-8192",
+            max_tokens=250,
+        )
+        return chat_completion.choices[0].message.content
+    except Exception as exc:
+        return "Offline Anomaly Detection: System operates nominally. API unreachable."

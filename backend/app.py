@@ -84,6 +84,12 @@ def create_app():
 
 app = create_app()
 
+# Start the background cron scheduler
+try:
+    from scheduler import start_background_jobs
+    start_background_jobs()
+except Exception as e:
+    logger.error(f"Failed to start scheduler: {e}")
+
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(host="0.0.0.0", port=5000, debug=True)

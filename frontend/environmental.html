@@ -20,6 +20,14 @@
         <button class="env" onclick="showPanel('carbonPanel', this)">Carbon Transactions</button>
       </div>
 
+      <div class="flex-between" style="margin-bottom:20px;">
+        <div></div>
+        <div>
+          <button class="btn btn-outline" style="margin-right:10px;" onclick="document.getElementById('csvFileInput').click()">📥 Import ERP Data (CSV)</button>
+          <input type="file" id="csvFileInput" style="display:none;" accept=".csv" onchange="uploadCsv(this)">
+        </div>
+      </div>
+
       <!-- Environmental Goals -->
       <div id="goalsPanel" class="panel active">
         <div class="toolbar">
@@ -294,6 +302,28 @@ document.getElementById("carbonForm").addEventListener("submit", async e => {
     toast("Carbon transaction logged"); closeModal("carbonModal"); e.target.reset(); loadCarbon();
   } catch (err) { toast(err.message, true); }
 });
+
+async function uploadCsv(input) {
+  if (!input.files[0]) return;
+  const formData = new FormData();
+  formData.append("file", input.files[0]);
+
+  try {
+    toast("Uploading and parsing CSV...");
+    const res = await fetch("/api/transactions/import", {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Upload failed");
+    
+    toast(data.message);
+    loadCarbon();
+  } catch(e) {
+    toast(e.message, true);
+  }
+  input.value = ""; // reset
+}
 
 (async function init() {
   try {

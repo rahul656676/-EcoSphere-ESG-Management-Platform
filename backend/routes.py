@@ -108,6 +108,44 @@ def list_carbon_transactions():
     """))
 
 
+import csv
+import io
+
+@api.route("/transactions/import", methods=["POST"])
+@login_required
+def import_transactions():
+    if 'file' not in request.files:
+        return jsonify({"success": False, "error": "No file part"}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"success": False, "error": "No selected file"}), 400
+    
+    if not file.filename.endswith('.csv'):
+        return jsonify({"success": False, "error": "Only CSV files are supported"}), 400
+        
+    try:
+        stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+        csv_input = csv.DictReader(stream)
+        
+        imported_count = 0
+        for row in csv_input:
+            # Expected columns: department_id, source_type, emission_factor_id, quantity, remarks
+            dept_id = int(row.get('department_id', 0))
+            factor_id = int(row.get('emission_factor_id', 0))
+            qty = float(row.get('quantity', 0))
+            source = row.get('source_type', 'Purchase')
+            remarks = row.get('remarks', 'Imported via CSV')
+            
+            if dept_id > 0 and factor_id > 0 and qty > 0:
+                from controllers import calculate_emission
+                calculate_emission(dept_id, source, factor_id, qty, remarks)
+                imported_count += 1
+                
+        return jsonify({"success": True, "message": f"Successfully imported {imported_count} transactions."})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+
+
 @api.route("/carbon-transactions", methods=["POST"])
 @login_required
 def create_carbon_transaction():
@@ -402,7 +440,17 @@ def dashboard_summary():
 # Reports
 # ---------------------------------------------------------------------------
 
-@api.route("/reports/<report_type>", methods=["GET"])
+@api.route("/ai/insights", methods=["GET"])
+@login_required
+def get_ai_insights():
+    try:
+        from reports import generate_ai_anomalies
+        insights = generate_ai_anomalies()
+        return jsonify({"success": True, "insights": insights})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@api.route("/api/reports/<report_type>", methods=["GET"])
 @login_required
 def generate_report(report_type):
     import reports as ai_reports
