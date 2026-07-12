@@ -209,8 +209,13 @@ async function decideChallenge(id, decision) {
 async function loadBadges() {
   const badges = await api("/badges");
   document.getElementById("badgeGrid").innerHTML = badges.map(b => `
-    <div class="card" style="text-align:center;border-color:var(--orange);background:#fff8f0;">
-      <div style="font-size:26px;">🏅</div>
+    <div class="card" style="text-align:center;border-color:var(--orange);background:var(--card-hover);">
+      <div style="margin-bottom:12px; display:inline-flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:50%; background:rgba(245, 158, 11, 0.15); box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="7"></circle>
+          <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+        </svg>
+      </div>
       <h4>${esc(b.name)}</h4>
       <p class="muted" style="font-size:12px;">${esc(b.description || '')}</p>
     </div>

@@ -181,7 +181,7 @@ def generate_ai_summary(report_type, data):
         )
         chat_completion = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama3-8b-8192",
+            model="llama-3.1-8b-instant",
             max_tokens=400,
         )
         return chat_completion.choices[0].message.content
@@ -232,7 +232,7 @@ def generate_ai_anomalies():
         )
         chat_completion = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama3-8b-8192",
+            model="llama-3.1-8b-instant",
             max_tokens=250,
         )
         return chat_completion.choices[0].message.content
@@ -254,7 +254,7 @@ def generate_ai_chat(message):
         )
         chat_completion = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama3-8b-8192",
+            model="llama-3.1-8b-instant",
             max_tokens=250,
         )
         return chat_completion.choices[0].message.content

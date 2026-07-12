@@ -461,7 +461,7 @@ def get_ai_insights():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
-@api.route("/api/reports/<report_type>", methods=["GET"])
+@api.route("/reports/<report_type>", methods=["GET"])
 @login_required
 def generate_report(report_type):
     import reports as ai_reports
