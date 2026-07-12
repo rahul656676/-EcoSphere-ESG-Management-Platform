@@ -21,7 +21,11 @@ We have meticulously engineered EcoSphere focusing on scalable architecture and 
 
 ## 🚀 Quick Start (Docker)
 
-1. Clone the repository
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/rahul656676/EcoSphere-ESG-Management-Platform.git
+   cd EcoSphere-ESG-Management-Platform
+   ```
 2. Copy `.env.example` to `.env` and add your **Groq API Key**:
    ```bash
    cp .env.example .env
