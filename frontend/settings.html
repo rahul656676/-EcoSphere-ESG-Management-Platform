@@ -228,7 +228,7 @@ document.getElementById("catForm").addEventListener("submit", async e => {
   try {
     await Promise.all([loadDepartments(), loadCategories(), loadConfig(), loadNotifSettings()]);
   } catch (e) { toast(e.message, true); }
-})()
+})();
 </script>
 </body>
 </html>
