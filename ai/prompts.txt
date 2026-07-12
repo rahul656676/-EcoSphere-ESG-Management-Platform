@@ -1,6 +1,6 @@
 EcoSphere - AI Prompt Library
 =============================
-These prompts are used by ai/reports.py when ANTHROPIC_API_KEY is configured,
+These prompts are used by ai/reports.py when GROQ_API_KEY is configured,
 to turn raw ESG numbers into short executive narratives. They are logged here
 so they can be audited / tuned without touching code.
 
@@ -22,7 +22,7 @@ Notes:
   report builder function (environmental_report / social_report /
   governance_report / esg_summary_report / custom_report), truncated to
   ~6000 characters to control token usage.
-- Model: claude-sonnet-4-6, max_tokens: 400.
+- Model: llama3-8b-8192, max_tokens: 400.
 - If the API key is not configured, or the call fails, the platform simply
   omits "ai_summary" (or returns an error string) and still serves the full
   numeric report - the AI narrative is a bonus, never a dependency.

@@ -20,13 +20,13 @@
 
       <div class="grid grid-3">
         <!-- Generate ESG Reports -->
-        <div class="card feature-card" onclick="toast('Generating comprehensive ESG report...', false)">
+        <div class="card feature-card">
           <div>
             <div class="icon-wrapper primary">📄</div>
             <h4>Generate ESG Reports</h4>
             <p>One-click automated reporting compliant with global ESG frameworks like GRI, SASB, and TCFD.</p>
           </div>
-          <button class="btn btn-outline" style="width: 100%">Generate Now →</button>
+          <button class="btn btn-outline" style="width: 100%" onclick="runAIReport('environmental', this)">Generate Now →</button>
         </div>
 
         <!-- Predict Future Emissions -->
@@ -70,13 +70,13 @@
         </div>
 
         <!-- One-click AI Insights -->
-        <div class="card feature-card" onclick="toast('Compiling executive summary...', false)">
+        <div class="card feature-card">
           <div>
             <div class="icon-wrapper orange">⚡</div>
             <h4>One-click AI Insights</h4>
             <p>Instant executive summaries and anomaly detection across all connected ESG data sources.</p>
           </div>
-          <button class="btn btn-outline" style="width: 100%">Execute Scan →</button>
+          <button class="btn btn-outline" style="width: 100%" onclick="runAIReport('esg-summary', this)">Execute Scan →</button>
         </div>
 
       </div>
@@ -88,6 +88,41 @@
 <script src="app.js"></script>
 <script>
 renderShell("ai.html", "AI Copilot");
+
+async function runAIReport(reportType, btnElement) {
+  const originalText = btnElement.innerText;
+  btnElement.innerText = "Analyzing data...";
+  btnElement.disabled = true;
+  toast("Contacting Groq AI Copilot...", false);
+  
+  try {
+    const data = await api(`/reports/${reportType}`);
+    
+    // Open the floating chat window and inject the response
+    const windowEl = document.getElementById("ai-assistant-window");
+    if (!windowEl.classList.contains("open")) {
+      windowEl.classList.add("open");
+    }
+    
+    const body = document.getElementById("ai-chat-body");
+    body.innerHTML += `<div class="ai-msg user">Generate ${reportType} report insights</div>`;
+    
+    if (data.ai_summary) {
+      body.innerHTML += `<div class="ai-msg system"><b>AI Report Summary:</b><br><br>${data.ai_summary}</div>`;
+    } else {
+      body.innerHTML += `<div class="ai-msg system">Analysis complete, but AI summary was not generated.</div>`;
+    }
+    
+    body.scrollTop = body.scrollHeight;
+    toast("Analysis complete!", false);
+    
+  } catch (e) {
+    toast("Failed to run AI scan: " + e.message, true);
+  } finally {
+    btnElement.innerText = originalText;
+    btnElement.disabled = false;
+  }
+}
 </script>
 </body>
 </html>

@@ -6,8 +6,8 @@ Section 7 of the spec (Department, Date Range, Module, Employee, Challenge,
 ESG Category), then optionally asks an LLM (Claude) to produce a short
 executive narrative summarizing the numbers.
 
-If ANTHROPIC_API_KEY is not configured, build_report() still returns the full
-structured data - only the free-text "ai_summary" field is skipped.
+If GROQ_API_KEY is not configured, build_report() still returns the full
+structured data - only the free-text "ai_summary" field returns a warning string.
 """
 
 import os
@@ -165,26 +165,25 @@ def build_report(report_type, filters):
 
 
 def generate_ai_summary(report_type, data):
-    """Optionally call Claude (Anthropic API) to turn the numbers into a short
-    executive narrative. Returns None if no API key is configured, so the
-    platform degrades gracefully to numbers-only reports."""
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        return None
+    """Call Groq API (Llama 3 model) to turn the numbers into a short
+    executive narrative. Returns a warning if no API key is configured."""
+    api_key = os.environ.get("GROQ_API_KEY")
+    if not api_key or "your_groq_api_key_here" in api_key:
+        return "(AI summary unavailable: Please set a valid GROQ_API_KEY in the .env file)"
     try:
-        import anthropic
-        client = anthropic.Anthropic(api_key=api_key)
+        from groq import Groq
+        client = Groq(api_key=api_key)
         prompt = (
             "You are an ESG reporting assistant for the EcoSphere platform. "
             f"Write a concise (3-4 sentence) executive summary of the following "
             f"{report_type} report JSON data. Be factual, do not invent numbers.\n\n"
             f"{json.dumps(data, default=str)[:6000]}"
         )
-        response = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=400,
+        chat_completion = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
+            model="llama3-8b-8192",
+            max_tokens=400,
         )
-        return "".join(block.text for block in response.content if hasattr(block, "text"))
+        return chat_completion.choices[0].message.content
     except Exception as exc:  # pragma: no cover - network/optional dependency
         return f"(AI summary unavailable: {exc})"

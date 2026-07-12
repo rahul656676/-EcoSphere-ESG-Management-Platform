@@ -11,6 +11,10 @@ Then open http://localhost:5000  (default login: admin / admin123)
 
 import os
 import sys
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from flask import Flask, send_from_directory, session, redirect
 
@@ -28,7 +32,8 @@ from routes import api  # noqa: E402
 
 def create_app():
     app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path="")
-    app.secret_key = os.environ.get("ECOSPHERE_SECRET_KEY", "ecosphere-dev-secret-change-me")
+    # Secure random fallback if not configured in environment
+    app.secret_key = os.environ.get("ECOSPHERE_SECRET_KEY") or os.urandom(24).hex()
 
     models.init_db()
     ensure_default_admin()
