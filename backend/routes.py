@@ -440,6 +440,17 @@ def dashboard_summary():
 # Reports
 # ---------------------------------------------------------------------------
 
+@api.route("/ai/chat", methods=["POST"])
+@login_required
+def ai_chat():
+    try:
+        user_msg = request.json.get("message", "")
+        from reports import generate_ai_chat
+        reply = generate_ai_chat(user_msg)
+        return jsonify({"success": True, "reply": reply})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @api.route("/ai/insights", methods=["GET"])
 @login_required
 def get_ai_insights():
