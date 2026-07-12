@@ -51,22 +51,53 @@ def _get_cursor(conn):
 
 def init_db(force=False):
     """Create the database from schema.sql (+ seed.sql) if it doesn't exist yet."""
+    
+    # We will do a simple check to see if tables exist to determine if fresh
+    fresh = False
     if IS_POSTGRES:
-        logger.info("Skipping init_db for PostgreSQL (assume managed via migrations).")
+        conn = get_db()
+        cur = _get_cursor(conn)
+        cur.execute("SELECT to_regclass('public.users')")
+        if cur.fetchone()[0] is None:
+            fresh = True
+        conn.close()
+    else:
+        fresh = force or (not os.path.exists(DB_PATH))
+        if force and os.path.exists(DB_PATH):
+            os.remove(DB_PATH)
+
+    if not fresh and not force:
         return
 
-    fresh = force or (not os.path.exists(DB_PATH))
-    if force and os.path.exists(DB_PATH):
-        os.remove(DB_PATH)
+    with open(SCHEMA_PATH, "r") as f:
+        schema_sql = f.read()
+    
+    if IS_POSTGRES:
+        # Convert SQLite schema to Postgres
+        schema_sql = schema_sql.replace("INTEGER PRIMARY KEY AUTOINCREMENT", "SERIAL PRIMARY KEY")
+        schema_sql = schema_sql.replace("DATETIME DEFAULT CURRENT_TIMESTAMP", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+        # Remove PRAGMA
+        schema_sql = re.sub(r'PRAGMA\s+.*?;', '', schema_sql)
 
     conn = get_db()
-    with open(SCHEMA_PATH, "r") as f:
-        conn.executescript(f.read())
+    cur = _get_cursor(conn)
+    
+    # execute script
+    if IS_POSTGRES:
+        cur.execute(schema_sql)
+    else:
+        conn.executescript(schema_sql)
     conn.commit()
 
     if fresh:
         with open(SEED_PATH, "r") as f:
-            conn.executescript(f.read())
+            seed_sql = f.read()
+            if IS_POSTGRES:
+                seed_sql = seed_sql.replace("INTEGER PRIMARY KEY AUTOINCREMENT", "SERIAL PRIMARY KEY")
+                seed_sql = seed_sql.replace("DATETIME DEFAULT CURRENT_TIMESTAMP", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+                cur.execute(seed_sql)
+            else:
+                conn.executescript(seed_sql)
         conn.commit()
 
     conn.close()
