@@ -475,3 +475,8 @@ def generate_report(report_type):
     }
     data = ai_reports.build_report(report_type, filters)
     return jsonify(data)
+
+@api.route("/version", methods=["GET"])
+def get_version():
+    return jsonify({"version": "1.0.0", "name": "EcoSphere ESG Management Platform"})
+

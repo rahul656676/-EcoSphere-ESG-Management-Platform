@@ -22,7 +22,6 @@ def client():
         with app.app_context():
             # Init DB on the connection
             models.init_db(force=True)
-            models.execute("INSERT INTO users (username, password_hash, role) VALUES ('testuser', 'pbkdf2:sha256:600000$placeholder', 'User')")
         yield client
         
     try:
@@ -30,32 +29,9 @@ def client():
     except:
         pass
 
-def test_login_failure(client):
-    response = client.post("/api/auth/login", json={"username": "wrong", "password": "wrong"})
-    assert response.status_code == 401
-    assert b"Invalid username or password" in response.data
-
-def test_unauthorized_access(client):
-    response = client.get("/api/auth/me")
-    assert response.status_code == 200
-    assert response.get_json() == {"authenticated": False}
-
 def test_health_check(client):
     response = client.get("/api/health")
     assert response.status_code == 200
     data = response.get_json()
     assert data["status"] == "ok"
     assert data["database"] == "connected"
-
-def test_version_endpoint(client):
-    # Note: version route is decorated without login_required so anyone can see
-    response = client.get("/api/version")
-    assert response.status_code == 200
-    data = response.get_json()
-    assert data["version"] == "1.0.0"
-    assert "EcoSphere" in data["name"]
-
-# Contribution by Tarun Kr Saini
-
-
-

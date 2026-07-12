@@ -34,41 +34,6 @@ import controllers  # noqa: E402
 from auth import auth_bp, ensure_default_admin  # noqa: E402
 from routes import api  # noqa: E402
 
-"""
-EcoSphere - app.py
-Main Flask application entrypoint. Serves the REST API (routes.py, auth.py)
-and the static frontend pages (frontend/*.html).
-
-Run:
-    cd backend
-    python3 app.py
-Then open http://localhost:5000  (default login: admin / admin123)
-"""
-
-import os
-import sys
-import logging
-from dotenv import load_dotenv
-
-# Configure standard logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
-logger = logging.getLogger(__name__)
-
-# Load environment variables from .env file
-load_dotenv()
-
-from flask import Flask, send_from_directory, session, redirect, jsonify
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
-AI_DIR = os.path.join(BASE_DIR, "ai")
-
-sys.path.insert(0, AI_DIR)  # so routes.py can `import reports`
-
-import models  # noqa: E402
-import controllers  # noqa: E402
-from auth import auth_bp, ensure_default_admin  # noqa: E402
-from routes import api  # noqa: E402
 
 
 def create_app():
