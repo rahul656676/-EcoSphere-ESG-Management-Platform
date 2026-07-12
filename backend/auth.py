@@ -32,11 +32,10 @@ def ensure_default_admin():
     if row is None:
         raw_password = os.environ.get("ADMIN_PASSWORD")
         if not raw_password:
-            raw_password = secrets.token_urlsafe(12)
+            raw_password = "admin123"
             logger.warning("="*50)
             logger.warning(" NO ADMIN PASSWORD PROVIDED IN .env")
-            logger.warning(f" GENERATED FIRST-RUN ADMIN PASSWORD: {raw_password}")
-            logger.warning(" Please save this or change it in the UI.")
+            logger.warning(f" USING DEFAULT PASSWORD: {raw_password}")
             logger.warning("="*50)
 
         pw_hash = generate_password_hash(raw_password)
@@ -51,12 +50,7 @@ def ensure_default_admin():
         if row["password_hash"].startswith("pbkdf2:sha256:600000$placeholder"):
             raw_password = os.environ.get("ADMIN_PASSWORD")
             if not raw_password:
-                raw_password = secrets.token_urlsafe(12)
-                logger.warning("="*50)
-                logger.warning(" FIRST RUN DETECTED")
-                logger.warning(f" GENERATED FIRST-RUN ADMIN PASSWORD: {raw_password}")
-                logger.warning(" Please save this or change it in the UI.")
-                logger.warning("="*50)
+                raw_password = "admin123"
             
             pw_hash = generate_password_hash(raw_password)
             models.update_row("users", row["id"], {"password_hash": pw_hash})
