@@ -4,67 +4,94 @@
 <meta charset="UTF-8">
 <title>EcoSphere - Reports</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 <div class="app-shell">
   <div class="sidebar" id="sidebar"></div>
   <div class="main">
     <div class="topbar" id="topbar"></div>
-    <div class="tabs" id="tabs"></div>
     <div class="content">
 
-      <div class="subtabs">
-        <button class="active" onclick="showPanel('reportCardsPanel', this)">Standard Reports</button>
-        <button onclick="showPanel('customPanel', this)">Custom Report Builder</button>
+      <div class="subtabs" style="display:flex; gap:8px; margin-bottom:24px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+        <button class="btn btn-outline rep active" onclick="showPanel('reportCardsPanel', this)" style="border-radius:20px"><i data-lucide="file-bar-chart" class="icon"></i> Standard Reports</button>
+        <button class="btn btn-outline rep" onclick="showPanel('customPanel', this)" style="border-radius:20px"><i data-lucide="sliders" class="icon"></i> Custom Report Builder</button>
       </div>
 
       <div id="reportCardsPanel" class="panel active">
-        <div class="grid grid-4">
-          <div class="card">
-            <h4>🌍 Environmental Report</h4>
-            <p class="muted" style="font-size:12px;">Emissions, goals, vendor &amp; product breakdown</p>
-            <button class="btn btn-dark" onclick="generate('environmental')">Generate</button>
+        <div class="grid grid-4 mb-4">
+          <div class="card fade-in">
+            <div class="flex-between mb-4">
+              <div class="kpi-icon-wrapper bg-env"><i data-lucide="leaf" class="icon color-env"></i></div>
+            </div>
+            <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:16px">Environmental Report</h4>
+            <p class="text-muted mb-4" style="font-size:13px; line-height:1.5">Emissions, goals, vendor &amp; product breakdown</p>
+            <button class="btn btn-outline" style="width:100%" onclick="generate('environmental')"><i data-lucide="play" class="icon" style="width:14px;height:14px"></i> Generate</button>
           </div>
-          <div class="card">
-            <h4>👥 Social Report</h4>
-            <p class="muted" style="font-size:12px;">Diversity, CSR participation, training completion</p>
-            <button class="btn btn-dark" onclick="generate('social')">Generate</button>
+          <div class="card fade-in">
+            <div class="flex-between mb-4">
+              <div class="kpi-icon-wrapper bg-soc"><i data-lucide="users" class="icon color-soc"></i></div>
+            </div>
+            <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:16px">Social Report</h4>
+            <p class="text-muted mb-4" style="font-size:13px; line-height:1.5">Diversity, CSR participation, training completion</p>
+            <button class="btn btn-outline" style="width:100%" onclick="generate('social')"><i data-lucide="play" class="icon" style="width:14px;height:14px"></i> Generate</button>
           </div>
-          <div class="card">
-            <h4>⚖️ Governance Report</h4>
-            <p class="muted" style="font-size:12px;">Policies, audits, compliance &amp; risk summary</p>
-            <button class="btn btn-dark" onclick="generate('governance')">Generate</button>
+          <div class="card fade-in">
+            <div class="flex-between mb-4">
+              <div class="kpi-icon-wrapper bg-gov"><i data-lucide="shield-check" class="icon color-gov"></i></div>
+            </div>
+            <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:16px">Governance Report</h4>
+            <p class="text-muted mb-4" style="font-size:13px; line-height:1.5">Policies, audits, compliance &amp; risk summary</p>
+            <button class="btn btn-outline" style="width:100%" onclick="generate('governance')"><i data-lucide="play" class="icon" style="width:14px;height:14px"></i> Generate</button>
           </div>
-          <div class="card">
-            <h4>📊 ESG Summary</h4>
-            <p class="muted" style="font-size:12px;">Executive overview: all 4 scores + dept comparison</p>
-            <button class="btn btn-dark" onclick="generate('esg-summary')">Generate</button>
+          <div class="card fade-in">
+            <div class="flex-between mb-4">
+              <div class="kpi-icon-wrapper bg-rep"><i data-lucide="pie-chart" class="icon color-rep"></i></div>
+            </div>
+            <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:16px">ESG Summary</h4>
+            <p class="text-muted mb-4" style="font-size:13px; line-height:1.5">Executive overview: all 4 scores + dept comparison</p>
+            <button class="btn btn-outline" style="width:100%" onclick="generate('esg-summary')"><i data-lucide="play" class="icon" style="width:14px;height:14px"></i> Generate</button>
           </div>
         </div>
 
-        <div class="section-title">Report Output</div>
-        <div class="card" id="reportOutput"><p class="muted">Select a report above to generate output.</p></div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i data-lucide="file-text" class="icon"></i> Report Output</div>
+            <div class="flex-center">
+              <button class="btn btn-outline btn-sm" onclick="exportReport('pdf')" title="Export PDF"><i data-lucide="file" class="icon" style="width:14px;height:14px"></i> PDF</button>
+              <button class="btn btn-outline btn-sm" onclick="exportReport('excel')" title="Export Excel"><i data-lucide="file-spreadsheet" class="icon" style="width:14px;height:14px"></i> Excel</button>
+              <button class="btn btn-outline btn-sm" onclick="exportReport('csv')" title="Export CSV"><i data-lucide="file-text" class="icon" style="width:14px;height:14px"></i> CSV</button>
+            </div>
+          </div>
+          <div id="reportOutput" style="min-height:200px"><p class="text-muted text-center" style="padding:40px">Select a report above to generate output.</p></div>
+        </div>
       </div>
 
-      <div id="customPanel" class="panel">
-        <div class="card">
-          <h4>🔧 Custom Report Builder: Filters</h4>
-          <div class="grid grid-4">
-            <div class="form-row"><label>Department</label><select id="fDept"><option value="">All</option></select></div>
-            <div class="form-row"><label>Date From</label><input type="date" id="fDateFrom"></div>
-            <div class="form-row"><label>Date To</label><input type="date" id="fDateTo"></div>
-            <div class="form-row"><label>Employee</label><select id="fEmployee"><option value="">All</option></select></div>
-            <div class="form-row"><label>Challenge</label><select id="fChallenge"><option value="">All</option></select></div>
+      <div id="customPanel" class="panel" style="display:none">
+        <div class="card mb-4 fade-in">
+          <h4 class="mt-0 mb-4 color-rep flex-center" style="justify-content:flex-start; font-size:16px"><i data-lucide="sliders" class="icon"></i> Custom Report Filters</h4>
+          <div class="grid grid-4 gap-4">
+            <div class="form-group mb-0"><label class="form-label">Department</label><select class="form-control" id="fDept"><option value="">All</option></select></div>
+            <div class="form-group mb-0"><label class="form-label">Employee</label><select class="form-control" id="fEmployee"><option value="">All</option></select></div>
+            <div class="form-group mb-0"><label class="form-label">Challenge</label><select class="form-control" id="fChallenge"><option value="">All</option></select></div>
+            <div class="form-group mb-0"></div> <!-- spacing -->
+            <div class="form-group mb-0"><label class="form-label">Date From</label><input type="date" class="form-control" id="fDateFrom"></div>
+            <div class="form-group mb-0"><label class="form-label">Date To</label><input type="date" class="form-control" id="fDateTo"></div>
           </div>
-          <div class="form-actions">
-            <button class="btn btn-dark" onclick="runCustomReport()">▶ Run Report</button>
-            <button class="btn btn-outline" onclick="exportReport('pdf')">Export: PDF</button>
-            <button class="btn btn-outline" onclick="exportReport('excel')">Export: Excel</button>
-            <button class="btn btn-outline" onclick="exportReport('csv')">Export: CSV</button>
+          <div class="flex-center mt-4" style="justify-content:flex-start; border-top:1px solid var(--border); padding-top:20px">
+            <button class="btn btn-rep" onclick="runCustomReport()"><i data-lucide="play" class="icon"></i> Run Report</button>
+            <button class="btn btn-outline" onclick="exportReport('pdf')"><i data-lucide="file" class="icon"></i> Export PDF</button>
+            <button class="btn btn-outline" onclick="exportReport('excel')"><i data-lucide="file-spreadsheet" class="icon"></i> Export Excel</button>
+            <button class="btn btn-outline" onclick="exportReport('csv')"><i data-lucide="file-text" class="icon"></i> Export CSV</button>
           </div>
         </div>
-        <div class="section-title">Custom Report Output</div>
-        <div class="card" id="customOutput"><p class="muted">Run the report to see results.</p></div>
+        
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i data-lucide="bar-chart" class="icon"></i> Custom Report Output</div>
+          </div>
+          <div id="customOutput" style="min-height:200px"><p class="text-muted text-center" style="padding:40px">Run the report to see results.</p></div>
+        </div>
       </div>
 
     </div>
@@ -73,36 +100,53 @@
 
 <script src="app.js"></script>
 <script>
-renderShell("reports.html", "Reports");
+renderShell("reports.html", "Reports Module");
 let lastReportData = null;
 
+function showPanel(name, btnEl) {
+  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+  document.getElementById(name).style.display = 'block';
+  document.querySelectorAll('.subtabs button').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = 'transparent';
+    b.style.color = 'var(--text-primary)';
+  });
+  btnEl.classList.add('active');
+  btnEl.style.background = 'var(--rep-bg)';
+  btnEl.style.color = 'var(--rep)';
+  btnEl.style.borderColor = 'var(--rep)';
+}
+document.querySelector('.subtabs button').click();
+
 function renderJsonTable(rows) {
-  if (!rows || !rows.length) return `<p class="muted">No rows.</p>`;
+  if (!rows || !rows.length) return `<p class="text-muted">No rows.</p>`;
   const cols = Object.keys(rows[0]);
-  return `<div class="table-wrap"><table><thead><tr>${cols.map(c => `<th>${esc(c)}</th>`).join("")}</tr></thead>
+  return `<div class="table-wrapper mb-4"><table><thead><tr>${cols.map(c => `<th>${esc(c)}</th>`).join("")}</tr></thead>
     <tbody>${rows.map(r => `<tr>${cols.map(c => `<td>${esc(r[c])}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
 async function generate(type) {
   const out = document.getElementById("reportOutput");
-  out.innerHTML = `<p class="muted">Generating...</p>`;
+  out.innerHTML = `<div class="flex-center text-muted" style="padding:40px"><i data-lucide="loader" class="icon" style="animation: spin 1s linear infinite"></i> Generating...</div>`;
+  lucide.createIcons();
   try {
     const data = await api(`/reports/${type}`);
     lastReportData = data;
-    let html = `<h4>${esc(data.report)}</h4>`;
-    if (data.ai_summary) html += `<p style="background:#f4f6f8;padding:10px;border-radius:6px;">${esc(data.ai_summary)}</p>`;
+    let html = `<h3 style="margin-top:0; color:var(--text-primary)">${esc(data.report)}</h3>`;
+    if (data.ai_summary) html += `<div style="background:var(--rep-bg); color:var(--rep); padding:16px; border-left:4px solid var(--rep); border-radius:4px; margin-bottom:24px; line-height:1.5"><i data-lucide="sparkles" class="icon" style="width:16px;height:16px;vertical-align:middle;margin-right:6px"></i> ${esc(data.ai_summary)}</div>`;
     for (const [key, val] of Object.entries(data)) {
       if (["report", "ai_summary"].includes(key)) continue;
       if (Array.isArray(val)) {
-        html += `<h4 style="margin-top:16px;">${esc(key)}</h4>${renderJsonTable(val)}`;
+        html += `<h4 style="margin:24px 0 16px; color:var(--text-primary); text-transform:capitalize">${esc(key).replace(/_/g, ' ')}</h4>${renderJsonTable(val)}`;
       } else if (val && typeof val === "object") {
-        html += `<h4 style="margin-top:16px;">${esc(key)}</h4><p>${esc(JSON.stringify(val))}</p>`;
+        html += `<h4 style="margin:24px 0 16px; color:var(--text-primary); text-transform:capitalize">${esc(key).replace(/_/g, ' ')}</h4><pre style="background:var(--surface); padding:16px; border-radius:8px; border:1px solid var(--border); overflow-x:auto">${esc(JSON.stringify(val, null, 2))}</pre>`;
       } else {
-        html += `<p><b>${esc(key)}:</b> ${esc(val)}</p>`;
+        html += `<div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid var(--border)"><span class="text-muted text-capitalize">${esc(key).replace(/_/g, ' ')}</span><span style="font-weight:600">${esc(val)}</span></div>`;
       }
     }
     out.innerHTML = html;
-  } catch (e) { out.innerHTML = `<p class="muted">Error: ${esc(e.message)}</p>`; }
+    lucide.createIcons();
+  } catch (e) { out.innerHTML = `<p class="text-muted" style="color:var(--error)">Error: ${esc(e.message)}</p>`; }
 }
 
 async function loadFilterOptions() {
@@ -128,18 +172,20 @@ async function runCustomReport() {
   if (chal) params.set("challenge_id", chal);
 
   const out = document.getElementById("customOutput");
-  out.innerHTML = `<p class="muted">Running report...</p>`;
+  out.innerHTML = `<div class="flex-center text-muted" style="padding:40px"><i data-lucide="loader" class="icon" style="animation: spin 1s linear infinite"></i> Running report...</div>`;
+  lucide.createIcons();
   try {
     const data = await api(`/reports/custom?${params.toString()}`);
     lastReportData = data;
     let html = "";
     for (const [key, val] of Object.entries(data)) {
       if (key === "report") continue;
-      if (key === "ai_summary" && val) { html += `<p style="background:#f4f6f8;padding:10px;border-radius:6px;">${esc(val)}</p>`; continue; }
-      if (Array.isArray(val)) html += `<h4 style="margin-top:16px;">${esc(key)}</h4>${renderJsonTable(val)}`;
+      if (key === "ai_summary" && val) { html += `<div style="background:var(--rep-bg); color:var(--rep); padding:16px; border-left:4px solid var(--rep); border-radius:4px; margin-bottom:24px; line-height:1.5"><i data-lucide="sparkles" class="icon" style="width:16px;height:16px;vertical-align:middle;margin-right:6px"></i> ${esc(val)}</div>`; continue; }
+      if (Array.isArray(val)) html += `<h4 style="margin:24px 0 16px; color:var(--text-primary); text-transform:capitalize">${esc(key).replace(/_/g, ' ')}</h4>${renderJsonTable(val)}`;
     }
-    out.innerHTML = html || `<p class="muted">No data matched the selected filters.</p>`;
-  } catch (e) { out.innerHTML = `<p class="muted">Error: ${esc(e.message)}</p>`; }
+    out.innerHTML = html || `<p class="text-muted text-center" style="padding:40px">No data matched the selected filters.</p>`;
+    lucide.createIcons();
+  } catch (e) { out.innerHTML = `<p class="text-muted" style="color:var(--error)">Error: ${esc(e.message)}</p>`; }
 }
 
 function exportReport(format) {
@@ -163,6 +209,11 @@ function downloadFile(content, filename, mime) {
   a.href = url; a.download = filename; a.click();
   URL.revokeObjectURL(url);
 }
+
+// Add a quick spin animation for loading
+const style = document.createElement('style');
+style.textContent = `@keyframes spin { 100% { transform: rotate(360deg); } }`;
+document.head.appendChild(style);
 
 loadFilterOptions().catch(e => toast(e.message, true));
 </script>

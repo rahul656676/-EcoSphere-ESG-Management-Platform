@@ -4,36 +4,43 @@
 <meta charset="UTF-8">
 <title>EcoSphere - Login</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
-  body { display:flex; align-items:center; justify-content:center; height:100vh; background:linear-gradient(135deg,#1e9e50 0%,#0d3b66 100%); }
-  .login-box { background:#fff; padding:36px 34px; border-radius:12px; width:360px; box-shadow:0 12px 40px rgba(0,0,0,.25); }
-  .login-box h1 { color:#1e9e50; font-size:22px; margin:0 0 4px; }
-  .login-box p.sub { color:#6b7280; font-size:13px; margin:0 0 22px; }
-  .login-box .form-row { margin-bottom:14px; }
-  .hint { font-size:12px; color:#6b7280; margin-top:14px; text-align:center; }
-  #err { color:#d0342c; font-size:13px; margin-top:8px; display:none; }
+  body { display:flex; align-items:center; justify-content:center; height:100vh; background:var(--bg); margin:0; font-family:var(--font); color:var(--text-primary); }
+  .login-box { background:var(--card-bg); padding:40px; border-radius:16px; width:400px; box-shadow:0 12px 40px rgba(0,0,0,0.5); border:1px solid var(--border); }
+  .login-box h1 { color:var(--primary); font-size:24px; margin:0 0 8px; display:flex; align-items:center; gap:8px; justify-content:center; }
+  .login-box p.sub { color:var(--text-secondary); font-size:14px; margin:0 0 32px; text-align:center; }
+  .hint { font-size:13px; color:var(--text-muted); margin-top:24px; text-align:center; padding-top:16px; border-top:1px solid var(--border); }
+  #err { color:var(--error); font-size:13px; margin-top:12px; display:none; text-align:center; padding:10px; background:rgba(239, 68, 68, 0.1); border-radius:6px; }
 </style>
 </head>
 <body>
-  <div class="login-box">
-    <h1>🌿 EcoSphere</h1>
-    <p class="sub">ESG Management Platform</p>
+  <div class="login-box slide-up">
+    <h1><i data-lucide="leaf" class="icon" style="width:24px;height:24px;color:var(--primary)"></i> EcoSphere AI</h1>
+    <p class="sub">Enterprise ESG Management Platform</p>
     <form id="loginForm">
-      <div class="form-row">
-        <label>Username</label>
-        <input type="text" id="username" value="admin" required>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <div style="position:relative">
+          <i data-lucide="user" class="icon" style="position:absolute; left:12px; top:10px; color:var(--text-muted); width:18px;height:18px"></i>
+          <input class="form-control" type="text" id="username" value="admin" style="padding-left:38px" required>
+        </div>
       </div>
-      <div class="form-row">
-        <label>Password</label>
-        <input type="password" id="password" value="admin123" required>
+      <div class="form-group mb-4">
+        <label class="form-label">Password</label>
+        <div style="position:relative">
+          <i data-lucide="lock" class="icon" style="position:absolute; left:12px; top:10px; color:var(--text-muted); width:18px;height:18px"></i>
+          <input class="form-control" type="password" id="password" value="admin123" style="padding-left:38px" required>
+        </div>
       </div>
-      <button type="submit" class="btn btn-green" style="width:100%;">Log In</button>
+      <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; font-size:15px; border-radius:8px">Log In to ERP</button>
       <div id="err"></div>
     </form>
-    <div class="hint">Default credentials: <b>admin / admin123</b></div>
+    <div class="hint">Default credentials: <b style="color:var(--text-primary)">admin / admin123</b></div>
   </div>
 
 <script>
+lucide.createIcons();
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const username = document.getElementById("username").value;
@@ -50,12 +57,14 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     if (data.success) {
       window.location.href = "dashboard.html";
     } else {
-      errEl.textContent = data.error || "Login failed";
+      errEl.innerHTML = `<i data-lucide="alert-circle" class="icon" style="width:14px;height:14px;vertical-align:middle;margin-right:4px"></i> ` + (data.error || "Login failed");
       errEl.style.display = "block";
+      lucide.createIcons();
     }
   } catch (err) {
-    errEl.textContent = "Could not reach server.";
+    errEl.innerHTML = `<i data-lucide="alert-circle" class="icon" style="width:14px;height:14px;vertical-align:middle;margin-right:4px"></i> Could not reach server.`;
     errEl.style.display = "block";
+    lucide.createIcons();
   }
 });
 </script>

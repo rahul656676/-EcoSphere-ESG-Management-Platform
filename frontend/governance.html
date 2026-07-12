@@ -4,58 +4,78 @@
 <meta charset="UTF-8">
 <title>EcoSphere - Governance</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 <div class="app-shell">
   <div class="sidebar" id="sidebar"></div>
   <div class="main">
     <div class="topbar" id="topbar"></div>
-    <div class="tabs" id="tabs"></div>
     <div class="content">
 
-      <div class="subtabs">
-        <button class="gov active" onclick="showPanel('policiesPanel', this)">Policies</button>
-        <button class="gov" onclick="showPanel('ackPanel', this)">Policy Acknowledgements</button>
-        <button class="gov" onclick="showPanel('auditsPanel', this)">Audits</button>
-        <button class="gov" onclick="showPanel('issuesPanel', this)">Compliance Issues</button>
+      <div class="subtabs" style="display:flex; gap:8px; margin-bottom:24px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+        <button class="btn btn-outline gov active" onclick="showPanel('policiesPanel', this)" style="border-radius:20px"><i data-lucide="file-text" class="icon"></i> Policies</button>
+        <button class="btn btn-outline gov" onclick="showPanel('ackPanel', this)" style="border-radius:20px"><i data-lucide="check-square" class="icon"></i> Acknowledgements</button>
+        <button class="btn btn-outline gov" onclick="showPanel('auditsPanel', this)" style="border-radius:20px"><i data-lucide="search" class="icon"></i> Audits</button>
+        <button class="btn btn-outline gov" onclick="showPanel('issuesPanel', this)" style="border-radius:20px"><i data-lucide="alert-triangle" class="icon"></i> Compliance Issues</button>
       </div>
 
       <!-- Policies -->
       <div id="policiesPanel" class="panel active">
-        <div class="toolbar"><button class="btn btn-purple" onclick="openModal('policyModal')">+ New Policy</button></div>
-        <div class="table-wrap">
-          <table><thead><tr><th>Title</th><th>Description</th><th>Status</th><th>Created</th></tr></thead>
-          <tbody id="policiesTable"><tr><td colspan="4" class="empty-state">Loading...</td></tr></tbody></table>
+        <div class="card fade-in">
+          <div class="flex-between mb-4">
+            <button class="btn btn-gov" onclick="openModal('policyModal')"><i data-lucide="plus" class="icon"></i> New Policy</button>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Title</th><th>Description</th><th>Status</th><th>Created</th></tr></thead>
+              <tbody id="policiesTable"><tr><td colspan="4" class="text-muted text-center" style="padding:40px">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- Policy Acknowledgements -->
-      <div id="ackPanel" class="panel">
-        <div class="table-wrap">
-          <table><thead><tr><th>Employee</th><th>Policy</th><th>Status</th><th>Acknowledged Date</th><th></th></tr></thead>
-          <tbody id="ackTable"><tr><td colspan="5" class="empty-state">Loading...</td></tr></tbody></table>
+      <div id="ackPanel" class="panel" style="display:none">
+        <div class="card fade-in">
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Employee</th><th>Policy</th><th>Status</th><th>Acknowledged Date</th><th>Action</th></tr></thead>
+              <tbody id="ackTable"><tr><td colspan="5" class="text-muted text-center" style="padding:40px">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- Audits -->
-      <div id="auditsPanel" class="panel">
-        <div class="toolbar">
-          <button class="btn btn-purple" onclick="openModal('auditModal')">+ New Audit</button>
-          <button class="btn btn-outline">Export ▾</button>
-        </div>
-        <div class="table-wrap">
-          <table><thead><tr><th>Title</th><th>Department</th><th>Auditor</th><th>Date</th><th>Findings</th><th>Status</th></tr></thead>
-          <tbody id="auditsTable"><tr><td colspan="6" class="empty-state">Loading...</td></tr></tbody></table>
+      <div id="auditsPanel" class="panel" style="display:none">
+        <div class="card fade-in">
+          <div class="flex-between mb-4">
+            <button class="btn btn-gov" onclick="openModal('auditModal')"><i data-lucide="plus" class="icon"></i> New Audit</button>
+            <button class="btn btn-outline"><i data-lucide="download" class="icon"></i> Export ▾</button>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Title</th><th>Department</th><th>Auditor</th><th>Date</th><th>Findings</th><th>Status</th></tr></thead>
+              <tbody id="auditsTable"><tr><td colspan="6" class="text-muted text-center" style="padding:40px">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- Compliance Issues -->
-      <div id="issuesPanel" class="panel">
-        <p class="muted mt-0">Compliance Issues raised from Audits — severity-tagged, resolution tracked. Issues past their Due Date while Open are auto-flagged Overdue.</p>
-        <div class="toolbar"><button class="btn btn-purple" onclick="openModal('issueModal')">+ Raise Compliance Issue</button></div>
-        <div class="table-wrap">
-          <table><thead><tr><th>Issue</th><th>Severity</th><th>Department</th><th>Owner</th><th>Due Date</th><th>Status</th><th></th></tr></thead>
-          <tbody id="issuesTable"><tr><td colspan="7" class="empty-state">Loading...</td></tr></tbody></table>
+      <div id="issuesPanel" class="panel" style="display:none">
+        <div class="card fade-in">
+          <div class="flex-between mb-4">
+            <button class="btn btn-gov" onclick="openModal('issueModal')"><i data-lucide="plus" class="icon"></i> Raise Compliance Issue</button>
+          </div>
+          <p class="text-muted mb-4" style="font-size:13px"><i data-lucide="info" class="icon" style="width:14px;height:14px;vertical-align:middle"></i> Issues raised from Audits are severity-tagged and tracked here. Overdue issues are auto-flagged.</p>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Issue</th><th>Severity</th><th>Department</th><th>Owner</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="issuesTable"><tr><td colspan="7" class="text-muted text-center" style="padding:40px">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -63,57 +83,63 @@
   </div>
 </div>
 
-<!-- Policy Modal -->
-<div class="modal-backdrop" id="policyModal">
-  <div class="modal">
-    <h3>New ESG Policy</h3>
+<!-- Modals -->
+<div class="modal-backdrop" id="policyModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:480px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="file-text" class="icon color-gov"></i> New ESG Policy</h3>
     <form id="policyForm">
-      <div class="form-row"><label>Title</label><input name="title" required></div>
-      <div class="form-row"><label>Description</label><textarea name="description"></textarea></div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-purple">Save</button>
+      <div class="form-group"><label class="form-label">Title</label><input class="form-control" name="title" required></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" name="description" rows="4"></textarea></div>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('policyModal')">Cancel</button>
+        <button type="submit" class="btn btn-gov">Save Policy</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Audit Modal -->
-<div class="modal-backdrop" id="auditModal">
-  <div class="modal">
-    <h3>New Audit</h3>
+<div class="modal-backdrop" id="auditModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:480px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="search" class="icon color-gov"></i> New Audit</h3>
     <form id="auditForm">
-      <div class="form-row"><label>Title</label><input name="title" required></div>
-      <div class="form-row"><label>Department</label><select name="department_id" id="auditDept" required></select></div>
-      <div class="form-row"><label>Auditor</label><input name="auditor" required></div>
-      <div class="form-row"><label>Date</label><input type="date" name="date" required></div>
-      <div class="form-row"><label>Findings</label><input name="findings"></div>
-      <div class="form-row"><label>Status</label>
-        <select name="status"><option>Under Review</option><option>Completed</option></select>
+      <div class="form-group"><label class="form-label">Title</label><input class="form-control" name="title" required></div>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Department</label><select class="form-control" name="department_id" id="auditDept" required></select></div>
+        <div class="form-group"><label class="form-label">Date</label><input class="form-control" type="date" name="date" required></div>
       </div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-purple">Save</button>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Auditor</label><input class="form-control" name="auditor" required></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" name="status"><option>Under Review</option><option>Completed</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Findings</label><input class="form-control" name="findings"></div>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('auditModal')">Cancel</button>
+        <button type="submit" class="btn btn-gov">Save Audit</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Compliance Issue Modal -->
-<div class="modal-backdrop" id="issueModal">
-  <div class="modal">
-    <h3>Raise Compliance Issue</h3>
+<div class="modal-backdrop" id="issueModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:480px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="alert-triangle" class="icon color-gov"></i> Raise Compliance Issue</h3>
     <form id="issueForm">
-      <div class="form-row"><label>Description</label><input name="description" required></div>
-      <div class="form-row"><label>Severity</label>
-        <select name="severity"><option>Low</option><option selected>Medium</option><option>High</option></select>
+      <div class="form-group"><label class="form-label">Description</label><input class="form-control" name="description" required></div>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Severity</label>
+          <select class="form-control" name="severity"><option>Low</option><option selected>Medium</option><option>High</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Department</label><select class="form-control" name="department_id" id="issueDept" required></select></div>
       </div>
-      <div class="form-row"><label>Department</label><select name="department_id" id="issueDept" required></select></div>
-      <div class="form-row"><label>Owner (required)</label><input name="owner" required></div>
-      <div class="form-row"><label>Due Date (required)</label><input type="date" name="due_date" required></div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-purple">Save</button>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Owner</label><input class="form-control" name="owner" required></div>
+        <div class="form-group"><label class="form-label">Due Date</label><input class="form-control" type="date" name="due_date" required></div>
+      </div>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('issueModal')">Cancel</button>
+        <button type="submit" class="btn btn-gov">Save Issue</button>
       </div>
     </form>
   </div>
@@ -121,17 +147,32 @@
 
 <script src="app.js"></script>
 <script>
-renderShell("governance.html", "Governance");
+renderShell("governance.html", "Governance Module");
 let DEPARTMENTS = [];
 
-function statusPill(status) {
-  const map = { Active: "green", Completed: "green", "Under Review": "purple", Open: "red",
-    Resolved: "green", Overdue: "red", Pending: "yellow", Acknowledged: "green" };
-  return `<span class="pill pill-${map[status] || 'gray'}">${esc(status)}</span>`;
+function showPanel(name, btnEl) {
+  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+  document.getElementById(name).style.display = 'block';
+  document.querySelectorAll('.subtabs button').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = 'transparent';
+    b.style.color = 'var(--text-primary)';
+  });
+  btnEl.classList.add('active');
+  btnEl.style.background = 'var(--gov-bg)';
+  btnEl.style.color = 'var(--gov)';
+  btnEl.style.borderColor = 'var(--gov)';
 }
-function severityPill(sev) {
-  const map = { Low: "gray", Medium: "yellow", High: "red" };
-  return `<span class="pill pill-${map[sev] || 'gray'}">${esc(sev)}</span>`;
+document.querySelector('.subtabs button').click();
+
+function statusBadge(status) {
+  const map = { Active: "success", Completed: "success", "Under Review": "info", Open: "warning",
+    Resolved: "success", Overdue: "error", Pending: "warning", Acknowledged: "success" };
+  return `<span class="badge badge-${map[status] || 'info'}">${esc(status)}</span>`;
+}
+function severityBadge(sev) {
+  const map = { Low: "info", Medium: "warning", High: "error" };
+  return `<span class="badge badge-${map[sev] || 'info'}">${esc(sev)}</span>`;
 }
 
 async function loadDepartments() {
@@ -144,17 +185,23 @@ async function loadDepartments() {
 async function loadPolicies() {
   const rows = await api("/policies");
   document.getElementById("policiesTable").innerHTML = rows.map(p => `<tr>
-    <td>${esc(p.title)}</td><td>${esc(p.description || '')}</td><td>${statusPill(p.status)}</td><td>${fmtDate(p.created_date)}</td>
-  </tr>`).join("") || `<tr><td colspan="4" class="empty-state">No policies yet.</td></tr>`;
+    <td style="font-weight:500; color:var(--text-primary)"><i data-lucide="file-text" class="icon color-gov" style="width:14px;height:14px;margin-right:6px"></i>${esc(p.title)}</td>
+    <td>${esc(p.description || '')}</td>
+    <td>${statusBadge(p.status)}</td>
+    <td>${fmtDate(p.created_date)}</td>
+  </tr>`).join("") || `<tr><td colspan="4" class="text-muted text-center" style="padding:40px">No policies yet.</td></tr>`;
+  lucide.createIcons();
 }
 
 async function loadAck() {
   const rows = await api("/policy-acknowledgements");
   document.getElementById("ackTable").innerHTML = rows.map(a => `<tr>
-    <td>${esc(a.employee_name)}</td><td>${esc(a.policy_title)}</td><td>${statusPill(a.status)}</td>
-    <td>${fmtDate(a.acknowledged_date)}</td>
-    <td>${a.status === 'Pending' ? `<button class="btn btn-purple btn-sm" onclick="ack(${a.id})">Acknowledge</button>` : '-'}</td>
-  </tr>`).join("") || `<tr><td colspan="5" class="empty-state">No acknowledgements yet.</td></tr>`;
+    <td style="font-weight:500; color:var(--text-primary)">${esc(a.employee_name)}</td>
+    <td>${esc(a.policy_title)}</td>
+    <td>${statusBadge(a.status)}</td>
+    <td>${a.acknowledged_date ? fmtDate(a.acknowledged_date) : '<span class="text-muted">—</span>'}</td>
+    <td>${a.status === 'Pending' ? `<button class="btn btn-gov btn-sm" onclick="ack(${a.id})">Acknowledge</button>` : '<span class="text-muted">—</span>'}</td>
+  </tr>`).join("") || `<tr><td colspan="5" class="text-muted text-center" style="padding:40px">No acknowledgements yet.</td></tr>`;
 }
 
 async function ack(id) {
@@ -166,24 +213,39 @@ async function loadAudits() {
   const rows = await api("/audits");
   document.getElementById("auditsTable").innerHTML = rows.map(a => {
     const dept = DEPARTMENTS.find(d => d.id === a.department_id);
-    return `<tr><td>${esc(a.title)}</td><td>${dept ? esc(dept.name) : '-'}</td><td>${esc(a.auditor)}</td>
-    <td>${fmtDate(a.date)}</td><td>${esc(a.findings || '')}</td><td>${statusPill(a.status)}</td></tr>`;
-  }).join("") || `<tr><td colspan="6" class="empty-state">No audits yet.</td></tr>`;
+    return `<tr>
+      <td style="font-weight:500; color:var(--text-primary)">${esc(a.title)}</td>
+      <td>${dept ? esc(dept.name) : '-'}</td>
+      <td>${esc(a.auditor)}</td>
+      <td>${fmtDate(a.date)}</td>
+      <td>${esc(a.findings || '')}</td>
+      <td>${statusBadge(a.status)}</td>
+    </tr>`;
+  }).join("") || `<tr><td colspan="6" class="text-muted text-center" style="padding:40px">No audits yet.</td></tr>`;
 }
 
 async function loadIssues() {
   const rows = await api("/compliance-issues");
   document.getElementById("issuesTable").innerHTML = rows.map(i => `<tr>
-    <td>${esc(i.description)}</td><td>${severityPill(i.severity)}</td><td>${esc(i.department_name || '-')}</td>
-    <td>${esc(i.owner)}</td><td>${fmtDate(i.due_date)}</td><td>${statusPill(i.status)}</td>
-    <td>${i.status !== 'Resolved' ? `<button class="btn btn-green btn-sm" onclick="resolveIssue(${i.id})">Resolve</button>` : '-'}</td>
-  </tr>`).join("") || `<tr><td colspan="7" class="empty-state">No compliance issues yet.</td></tr>`;
+    <td style="font-weight:500; color:var(--text-primary)">${esc(i.description)}</td>
+    <td>${severityBadge(i.severity)}</td>
+    <td>${esc(i.department_name || '-')}</td>
+    <td>${esc(i.owner)}</td>
+    <td>${fmtDate(i.due_date)}</td>
+    <td>${statusBadge(i.status)}</td>
+    <td>${i.status !== 'Resolved' ? `<button class="btn btn-outline btn-sm" style="color:var(--success); border-color:var(--success)" onclick="resolveIssue(${i.id})"><i data-lucide="check" class="icon"></i> Resolve</button>` : '<span class="text-muted">—</span>'}</td>
+  </tr>`).join("") || `<tr><td colspan="7" class="text-muted text-center" style="padding:40px">No compliance issues yet.</td></tr>`;
+  lucide.createIcons();
 }
 
 async function resolveIssue(id) {
   await api(`/compliance-issues/${id}`, { method: "PUT", body: { status: "Resolved" } });
   toast("Issue marked Resolved"); loadIssues();
 }
+
+function openModal(id) { document.getElementById(id).style.display = "flex"; }
+function closeModal(id) { document.getElementById(id).style.display = "none"; }
+window.openModal = openModal;
 
 document.getElementById("policyForm").addEventListener("submit", async e => {
   e.preventDefault();

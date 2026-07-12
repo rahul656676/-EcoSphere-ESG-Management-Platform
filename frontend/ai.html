@@ -4,79 +4,95 @@
 <meta charset="UTF-8">
 <title>EcoSphere - AI Copilot</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 <div class="app-shell">
   <div class="sidebar" id="sidebar"></div>
   <div class="main">
     <div class="topbar" id="topbar"></div>
-    <div class="tabs" id="tabs"></div>
     <div class="content">
 
-      <div class="section-title">✨ AI Intelligence & Automation</div>
-      <p class="muted" style="margin-bottom: 24px; max-width: 600px; line-height: 1.6;">
-        Leverage EcoSphere's advanced AI models to predict trends, automate reporting, and discover high-impact carbon reduction strategies.
-      </p>
+      <div class="flex-between mb-4">
+        <div>
+          <h2 class="mt-0 color-primary flex-center" style="justify-content:flex-start; margin-bottom:8px; font-size:24px"><i data-lucide="sparkles" class="icon"></i> AI Intelligence & Automation</h2>
+          <p class="text-muted" style="margin-bottom: 24px; max-width: 600px; line-height: 1.6; font-size:14px">
+            Leverage EcoSphere's advanced AI models to predict trends, automate reporting, and discover high-impact carbon reduction strategies.
+          </p>
+        </div>
+      </div>
 
       <div class="grid grid-3">
         <!-- Generate ESG Reports -->
-        <div class="card feature-card">
+        <div class="card fade-in" style="display:flex; flex-direction:column; justify-content:space-between">
           <div>
-            <div class="icon-wrapper primary">📄</div>
-            <h4>Generate ESG Reports</h4>
-            <p>One-click automated reporting compliant with global ESG frameworks like GRI, SASB, and TCFD.</p>
+            <div class="flex-center bg-primary" style="width:48px;height:48px;border-radius:12px;margin-bottom:16px; background:rgba(34,197,94,0.1)">
+              <i data-lucide="file-text" class="icon color-primary"></i>
+            </div>
+            <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:16px">Generate ESG Reports</h4>
+            <p class="text-muted" style="font-size:13px; line-height:1.5">One-click automated reporting compliant with global ESG frameworks like GRI, SASB, and TCFD.</p>
           </div>
-          <button class="btn btn-outline" style="width: 100%" onclick="runAIReport('environmental', this)">Generate Now →</button>
+          <button class="btn btn-outline mt-4" style="width: 100%" onclick="runAIReport('environmental', this)">Generate Now <i data-lucide="arrow-right" class="icon" style="width:14px;height:14px"></i></button>
         </div>
 
         <!-- Predict Future Emissions -->
-        <div class="card feature-card" onclick="toast('Loading predictive models...', false)">
+        <div class="card fade-in" style="display:flex; flex-direction:column; justify-content:space-between" onclick="toast('Loading predictive models...', false)">
           <div>
-            <div class="icon-wrapper blue">📈</div>
-            <h4>Predict Future Emissions</h4>
-            <p>AI-driven forecasting models to predict Scope 1, 2, and 3 emissions based on current operational data.</p>
+            <div class="flex-center" style="width:48px;height:48px;border-radius:12px;margin-bottom:16px; background:rgba(59,130,246,0.1)">
+              <i data-lucide="trending-up" class="icon color-soc"></i>
+            </div>
+            <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:16px">Predict Future Emissions</h4>
+            <p class="text-muted" style="font-size:13px; line-height:1.5">AI-driven forecasting models to predict Scope 1, 2, and 3 emissions based on current operational data.</p>
           </div>
-          <button class="btn btn-outline" style="width: 100%">View Forecast →</button>
+          <button class="btn btn-outline mt-4" style="width: 100%; border-color:var(--soc); color:var(--soc)">View Forecast <i data-lucide="arrow-right" class="icon" style="width:14px;height:14px"></i></button>
         </div>
 
         <!-- Carbon Reduction Suggestions -->
-        <div class="card feature-card" onclick="toast('Analyzing operational data for reductions...', false)">
+        <div class="card fade-in" style="display:flex; flex-direction:column; justify-content:space-between" onclick="toast('Analyzing operational data for reductions...', false)">
           <div>
-            <div class="icon-wrapper green">🌿</div>
-            <h4>Carbon Reduction Suggestions</h4>
-            <p>Smart, actionable recommendations to lower your carbon footprint and optimize supply chain efficiency.</p>
+            <div class="flex-center bg-env" style="width:48px;height:48px;border-radius:12px;margin-bottom:16px">
+              <i data-lucide="leaf" class="icon color-env"></i>
+            </div>
+            <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:16px">Carbon Reduction Suggestions</h4>
+            <p class="text-muted" style="font-size:13px; line-height:1.5">Smart, actionable recommendations to lower your carbon footprint and optimize supply chain efficiency.</p>
           </div>
-          <button class="btn btn-outline" style="width: 100%">Get Suggestions →</button>
+          <button class="btn btn-outline mt-4" style="width: 100%; border-color:var(--env); color:var(--env)">Get Suggestions <i data-lucide="arrow-right" class="icon" style="width:14px;height:14px"></i></button>
         </div>
 
         <!-- Compliance Risk Prediction -->
-        <div class="card feature-card" onclick="toast('Scanning regulatory databases...', false)">
+        <div class="card fade-in" style="display:flex; flex-direction:column; justify-content:space-between" onclick="toast('Scanning regulatory databases...', false)">
           <div>
-            <div class="icon-wrapper" style="background: rgba(239,68,68,0.1); color: var(--red);">⚠️</div>
-            <h4>Compliance Risk Prediction</h4>
-            <p>Proactive AI analysis of upcoming regulatory changes to flag potential compliance risks before they occur.</p>
+            <div class="flex-center" style="width:48px;height:48px;border-radius:12px;margin-bottom:16px; background:rgba(239,68,68,0.1)">
+              <i data-lucide="alert-triangle" class="icon color-error"></i>
+            </div>
+            <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:16px">Compliance Risk Prediction</h4>
+            <p class="text-muted" style="font-size:13px; line-height:1.5">Proactive AI analysis of upcoming regulatory changes to flag potential compliance risks before they occur.</p>
           </div>
-          <button class="btn btn-outline" style="width: 100%">Run Risk Scan →</button>
+          <button class="btn btn-outline mt-4" style="width: 100%; border-color:var(--error); color:var(--error)">Run Risk Scan <i data-lucide="arrow-right" class="icon" style="width:14px;height:14px"></i></button>
         </div>
 
         <!-- Smart Recommendations -->
-        <div class="card feature-card" onclick="toast('Fetching tailored recommendations...', false)">
+        <div class="card fade-in" style="display:flex; flex-direction:column; justify-content:space-between" onclick="toast('Fetching tailored recommendations...', false)">
           <div>
-            <div class="icon-wrapper purple">💡</div>
-            <h4>Smart Recommendations</h4>
-            <p>Tailored operational insights to improve diversity metrics, governance policies, and community impact.</p>
+            <div class="flex-center bg-gov" style="width:48px;height:48px;border-radius:12px;margin-bottom:16px">
+              <i data-lucide="lightbulb" class="icon color-gov"></i>
+            </div>
+            <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:16px">Smart Recommendations</h4>
+            <p class="text-muted" style="font-size:13px; line-height:1.5">Tailored operational insights to improve diversity metrics, governance policies, and community impact.</p>
           </div>
-          <button class="btn btn-outline" style="width: 100%">View Insights →</button>
+          <button class="btn btn-outline mt-4" style="width: 100%; border-color:var(--gov); color:var(--gov)">View Insights <i data-lucide="arrow-right" class="icon" style="width:14px;height:14px"></i></button>
         </div>
 
         <!-- One-click AI Insights -->
-        <div class="card feature-card">
+        <div class="card fade-in" style="display:flex; flex-direction:column; justify-content:space-between">
           <div>
-            <div class="icon-wrapper orange">⚡</div>
-            <h4>One-click AI Insights</h4>
-            <p>Instant executive summaries and anomaly detection across all connected ESG data sources.</p>
+            <div class="flex-center bg-gam" style="width:48px;height:48px;border-radius:12px;margin-bottom:16px">
+              <i data-lucide="zap" class="icon color-gam"></i>
+            </div>
+            <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:16px">One-click AI Insights</h4>
+            <p class="text-muted" style="font-size:13px; line-height:1.5">Instant executive summaries and anomaly detection across all connected ESG data sources.</p>
           </div>
-          <button class="btn btn-outline" style="width: 100%" onclick="runAIReport('esg-summary', this)">Execute Scan →</button>
+          <button class="btn btn-outline mt-4" style="width: 100%; border-color:var(--gam); color:var(--gam)" onclick="runAIReport('esg-summary', this)">Execute Scan <i data-lucide="arrow-right" class="icon" style="width:14px;height:14px"></i></button>
         </div>
 
       </div>
@@ -90,10 +106,11 @@
 renderShell("ai.html", "AI Copilot");
 
 async function runAIReport(reportType, btnElement) {
-  const originalText = btnElement.innerText;
-  btnElement.innerText = "Analyzing data...";
+  const originalText = btnElement.innerHTML;
+  btnElement.innerHTML = `<i data-lucide="loader" class="icon" style="animation: spin 1s linear infinite"></i> Analyzing...`;
+  lucide.createIcons();
   btnElement.disabled = true;
-  toast("Contacting Groq AI Copilot...", false);
+  toast("Contacting AI Copilot...", false);
   
   try {
     const data = await api(`/reports/${reportType}`);
@@ -108,19 +125,21 @@ async function runAIReport(reportType, btnElement) {
     body.innerHTML += `<div class="ai-msg user">Generate ${reportType} report insights</div>`;
     
     if (data.ai_summary) {
-      body.innerHTML += `<div class="ai-msg system"><b>AI Report Summary:</b><br><br>${data.ai_summary}</div>`;
+      body.innerHTML += `<div class="ai-msg system" style="background:var(--surface); border:1px solid var(--border)"><b style="color:var(--text-primary)"><i data-lucide="sparkles" class="icon" style="width:14px;height:14px"></i> AI Report Summary:</b><br><br>${data.ai_summary}</div>`;
     } else {
       body.innerHTML += `<div class="ai-msg system">Analysis complete, but AI summary was not generated.</div>`;
     }
     
     body.scrollTop = body.scrollHeight;
+    lucide.createIcons();
     toast("Analysis complete!", false);
     
   } catch (e) {
     toast("Failed to run AI scan: " + e.message, true);
   } finally {
-    btnElement.innerText = originalText;
+    btnElement.innerHTML = originalText;
     btnElement.disabled = false;
+    lucide.createIcons();
   }
 }
 </script>

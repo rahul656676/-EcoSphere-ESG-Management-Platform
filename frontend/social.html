@@ -4,53 +4,68 @@
 <meta charset="UTF-8">
 <title>EcoSphere - Social</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 <div class="app-shell">
   <div class="sidebar" id="sidebar"></div>
   <div class="main">
     <div class="topbar" id="topbar"></div>
-    <div class="tabs" id="tabs"></div>
     <div class="content">
 
-      <div class="subtabs">
-        <button class="soc active" onclick="showPanel('csrPanel', this)">CSR Activities</button>
-        <button class="soc" onclick="showPanel('partPanel', this)">Employee Participation</button>
-        <button class="soc" onclick="showPanel('diversityPanel', this)">Diversity Dashboard</button>
+      <div class="subtabs" style="display:flex; gap:8px; margin-bottom:24px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+        <button class="btn btn-outline soc active" onclick="showPanel('csrPanel', this)" style="border-radius:20px"><i data-lucide="heart" class="icon"></i> CSR Activities</button>
+        <button class="btn btn-outline soc" onclick="showPanel('partPanel', this)" style="border-radius:20px"><i data-lucide="users" class="icon"></i> Participation</button>
+        <button class="btn btn-outline soc" onclick="showPanel('diversityPanel', this)" style="border-radius:20px"><i data-lucide="pie-chart" class="icon"></i> Diversity</button>
       </div>
 
       <!-- CSR Activities -->
       <div id="csrPanel" class="panel active">
-        <div class="toolbar">
-          <button class="btn btn-blue" onclick="openModal('csrModal')">+ New Activity</button>
+        <div class="flex-between mb-4">
+          <button class="btn btn-soc" onclick="openModal('csrModal')"><i data-lucide="plus" class="icon"></i> New Activity</button>
         </div>
-        <div class="grid grid-4" id="csrCards"></div>
+        <div class="grid grid-3" id="csrCards"></div>
       </div>
 
       <!-- Employee Participation -->
-      <div id="partPanel" class="panel">
-        <p class="section-title" style="margin-top:0;">Employee Participation: approval queue</p>
-        <div class="toolbar">
-          <button class="btn btn-blue" onclick="openModal('joinModal')">+ Join Activity</button>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Employee</th><th>Activity</th><th>Proof</th><th>Points</th><th>Approval</th><th>Action</th></tr></thead>
-            <tbody id="partTable"><tr><td colspan="6" class="empty-state">Loading...</td></tr></tbody>
-          </table>
+      <div id="partPanel" class="panel" style="display:none">
+        <div class="card fade-in">
+          <div class="flex-between mb-4">
+            <div class="flex-center">
+              <button class="btn btn-soc" onclick="openModal('joinModal')"><i data-lucide="plus" class="icon"></i> Join Activity</button>
+            </div>
+            <div class="global-search" style="width:250px">
+              <i data-lucide="search" class="icon"></i>
+              <input type="text" placeholder="Search approvals..." oninput="filterTable('partTable', this.value)">
+            </div>
+          </div>
+          <p class="text-muted mb-4" style="font-size:13px"><i data-lucide="info" class="icon" style="width:14px;height:14px;vertical-align:middle"></i> Approval queue for employee CSR participation points.</p>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Employee</th><th>Activity</th><th>Proof</th><th>Points</th><th>Approval</th><th>Action</th></tr></thead>
+              <tbody id="partTable"><tr><td colspan="6" class="text-muted text-center" style="padding:40px">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- Diversity Dashboard -->
-      <div id="diversityPanel" class="panel">
+      <div id="diversityPanel" class="panel" style="display:none">
         <div class="grid grid-2">
-          <div class="card">
-            <h4>👥 Gender Diversity</h4>
-            <canvas id="diversityChart" height="160"></canvas>
+          <div class="card fade-in">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="users" class="icon"></i> Gender Diversity</div>
+            </div>
+            <div style="position: relative; height: 260px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+              <canvas id="diversityChart" height="200"></canvas>
+              <div id="diversityLegend" style="margin-top:16px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center;"></div>
+            </div>
           </div>
-          <div class="card">
-            <h4>📋 Employees by Department</h4>
-            <div id="deptBreakdown"><p class="muted">Loading...</p></div>
+          <div class="card fade-in">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="building" class="icon"></i> Employees by Department</div>
+            </div>
+            <div id="deptBreakdown" class="table-wrapper" style="border:none; box-shadow:none;"><p class="text-muted text-center" style="padding:40px">Loading...</p></div>
           </div>
         </div>
       </div>
@@ -59,37 +74,40 @@
   </div>
 </div>
 
-<!-- New CSR Activity Modal -->
-<div class="modal-backdrop" id="csrModal">
-  <div class="modal">
-    <h3>New CSR Activity</h3>
+<!-- Modals -->
+<div class="modal-backdrop" id="csrModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:480px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="heart" class="icon color-soc"></i> New CSR Activity</h3>
     <form id="csrForm">
-      <div class="form-row"><label>Name</label><input name="name" required></div>
-      <div class="form-row"><label>Description</label><textarea name="description"></textarea></div>
-      <div class="form-row"><label>Date</label><input type="date" name="date" required></div>
-      <div class="form-row"><label>Evidence Required?</label>
-        <select name="evidence_required"><option value="1">Yes</option><option value="0">No</option></select>
+      <div class="form-group"><label class="form-label">Name</label><input class="form-control" name="name" required></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" name="description" rows="3"></textarea></div>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Date</label><input class="form-control" type="date" name="date" required></div>
+        <div class="form-group"><label class="form-label">Evidence Required?</label>
+          <select class="form-control" name="evidence_required"><option value="1">Yes</option><option value="0">No</option></select>
+        </div>
       </div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-blue">Save</button>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('csrModal')">Cancel</button>
+        <button type="submit" class="btn btn-soc">Save Activity</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Join Activity Modal -->
-<div class="modal-backdrop" id="joinModal">
-  <div class="modal">
-    <h3>Join CSR Activity</h3>
+<div class="modal-backdrop" id="joinModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:480px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="users" class="icon color-soc"></i> Join CSR Activity</h3>
     <form id="joinForm">
-      <div class="form-row"><label>Employee</label><select name="employee_id" id="joinEmployee" required></select></div>
-      <div class="form-row"><label>Activity</label><select name="activity_id" id="joinActivity" required></select></div>
-      <div class="form-row"><label>Proof file name (optional)</label><input name="proof_file" placeholder="e.g. photo.jpg"></div>
-      <div class="form-row"><label>Points</label><input type="number" name="points_earned" value="50"></div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-blue">Submit</button>
+      <div class="form-group"><label class="form-label">Employee</label><select class="form-control" name="employee_id" id="joinEmployee" required></select></div>
+      <div class="form-group"><label class="form-label">Activity</label><select class="form-control" name="activity_id" id="joinActivity" required></select></div>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Proof File</label><input class="form-control" name="proof_file" placeholder="e.g. photo.jpg"></div>
+        <div class="form-group"><label class="form-label">Points Expected</label><input class="form-control" type="number" name="points_earned" value="50"></div>
+      </div>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('joinModal')">Cancel</button>
+        <button type="submit" class="btn btn-soc">Submit Request</button>
       </div>
     </form>
   </div>
@@ -97,25 +115,60 @@
 
 <script src="app.js"></script>
 <script>
-renderShell("social.html", "Social");
+renderShell("social.html", "Social Module");
 let EMPLOYEES = [], ACTIVITIES = [];
 
-function approvalPill(status) {
-  const map = { Pending: "yellow", Approved: "green", Rejected: "red" };
-  return `<span class="pill pill-${map[status] || 'gray'}">${esc(status)}</span>`;
+function showPanel(name, btnEl) {
+  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+  document.getElementById(name).style.display = 'block';
+  document.querySelectorAll('.subtabs button').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = 'transparent';
+    b.style.color = 'var(--text-primary)';
+  });
+  btnEl.classList.add('active');
+  btnEl.style.background = 'var(--soc-bg)';
+  btnEl.style.color = 'var(--soc)';
+  btnEl.style.borderColor = 'var(--soc)';
+}
+document.querySelector('.subtabs button').click();
+
+function filterTable(tbodyId, query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll(`#${tbodyId} tr`).forEach(tr => {
+    tr.style.display = tr.textContent.toLowerCase().includes(q) ? "" : "none";
+  });
+}
+
+function statusBadge(status) {
+  const map = { Pending: "warning", Approved: "success", Rejected: "error" };
+  return `<span class="badge badge-${map[status] || 'info'}">${esc(status)}</span>`;
 }
 
 async function loadCSRActivities() {
   ACTIVITIES = await api("/csr-activities");
   const grid = document.getElementById("csrCards");
-  grid.innerHTML = ACTIVITIES.map(a => `
-    <div class="card">
-      <h4>🌱 ${esc(a.name)}</h4>
-      <p class="muted" style="font-size:12px;">${esc(a.description || '')}</p>
-      <p class="muted" style="font-size:12px;">${a.evidence_required ? 'Evidence Required' : 'Open'} · ${fmtDate(a.date)}</p>
-      <button class="btn btn-blue btn-sm" onclick="quickJoin(${a.id})">Join</button>
-    </div>
-  `).join("") || `<p class="empty-state">No CSR activities yet.</p>`;
+  if (!ACTIVITIES.length) {
+    grid.innerHTML = `<div class="card" style="grid-column:span 3"><p class="text-muted text-center" style="padding:40px">No CSR activities yet.</p></div>`;
+  } else {
+    grid.innerHTML = ACTIVITIES.map(a => `
+      <div class="card fade-in" style="display:flex; flex-direction:column; justify-content:space-between">
+        <div>
+          <div class="flex-between mb-4">
+            <div class="kpi-icon-wrapper bg-soc"><i data-lucide="leaf" class="icon color-soc"></i></div>
+            <span class="badge badge-${a.evidence_required ? 'warning' : 'info'}">${a.evidence_required ? 'Proof Req' : 'Open'}</span>
+          </div>
+          <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:16px">${esc(a.name)}</h4>
+          <p class="text-muted" style="font-size:13px; line-height:1.5">${esc(a.description || '')}</p>
+        </div>
+        <div class="mt-4">
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom:12px"><i data-lucide="calendar" class="icon" style="width:12px;height:12px"></i> ${fmtDate(a.date)}</div>
+          <button class="btn btn-soc" style="width:100%" onclick="quickJoin(${a.id})">Join Activity</button>
+        </div>
+      </div>
+    `).join("");
+  }
+  lucide.createIcons();
 
   document.getElementById("joinActivity").innerHTML =
     ACTIVITIES.map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join("");
@@ -135,17 +188,21 @@ async function loadEmployees() {
 async function loadParticipation() {
   const rows = await api("/employee-participation");
   const tbody = document.getElementById("partTable");
-  if (!rows.length) { tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No participation records yet.</td></tr>`; return; }
+  if (!rows.length) { tbody.innerHTML = `<tr><td colspan="6" class="text-muted text-center" style="padding:40px">No participation records yet.</td></tr>`; return; }
   tbody.innerHTML = rows.map(r => `<tr>
-    <td>${esc(r.employee_name)}</td><td>${esc(r.activity_name)}</td><td>${esc(r.proof_file || '-')}</td>
-    <td>${r.points_earned}</td><td>${approvalPill(r.approval_status)}</td>
+    <td style="font-weight:500; color:var(--text-primary)">${esc(r.employee_name)}</td>
+    <td>${esc(r.activity_name)}</td>
+    <td>${r.proof_file ? `<a href="#" class="color-soc"><i data-lucide="paperclip" class="icon" style="width:14px;height:14px"></i> ${esc(r.proof_file)}</a>` : '<span class="text-muted">—</span>'}</td>
+    <td style="font-weight:600">${r.points_earned}</td>
+    <td>${statusBadge(r.approval_status)}</td>
     <td>
       ${r.approval_status === 'Pending' ? `
-        <button class="btn btn-blue btn-sm" onclick="decide(${r.id}, 'Approved')">Approve</button>
-        <button class="btn btn-red btn-sm" onclick="decide(${r.id}, 'Rejected')">Reject</button>
-      ` : '-'}
+        <button class="topbar-btn" style="display:inline-flex;color:var(--success);width:28px;height:28px;margin-right:4px" onclick="decide(${r.id}, 'Approved')" title="Approve"><i data-lucide="check" class="icon" style="width:14px;height:14px"></i></button>
+        <button class="topbar-btn" style="display:inline-flex;color:var(--error);width:28px;height:28px" onclick="decide(${r.id}, 'Rejected')" title="Reject"><i data-lucide="x" class="icon" style="width:14px;height:14px"></i></button>
+      ` : '<span class="text-muted">—</span>'}
     </td>
   </tr>`).join("");
+  lucide.createIcons();
 }
 
 async function decide(id, decision) {
@@ -158,31 +215,57 @@ async function decide(id, decision) {
 async function loadDiversity() {
   const canvas = document.getElementById("diversityChart");
   const ctx = canvas.getContext("2d");
-  const w = canvas.width = canvas.clientWidth, h = canvas.height = 160;
+  const w = canvas.width = 200, h = canvas.height = 200;
+  
   const counts = {};
   EMPLOYEES.forEach(e => { counts[e.gender || 'Unspecified'] = (counts[e.gender || 'Unspecified'] || 0) + 1; });
   const entries = Object.entries(counts);
   const total = EMPLOYEES.length || 1;
   let startAngle = -Math.PI / 2;
-  const colors = ["#1565c0", "#e8590c", "#7b3fe4", "#1e9e50"];
-  const cx = w / 2, cy = h / 2, r = 60;
+  
+  const root = getComputedStyle(document.documentElement);
+  const colors = [
+    root.getPropertyValue('--soc').trim() || '#3B82F6',
+    root.getPropertyValue('--env').trim() || '#22C55E',
+    root.getPropertyValue('--gam').trim() || '#F59E0B',
+    root.getPropertyValue('--gov').trim() || '#8B5CF6'
+  ];
+  
+  const cx = w / 2, cy = h / 2, r = 80;
+  
+  // Custom donut render
+  ctx.clearRect(0,0,w,h);
   entries.forEach(([label, count], i) => {
     const angle = (count / total) * Math.PI * 2;
-    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
     ctx.arc(cx, cy, r, startAngle, startAngle + angle);
-    ctx.closePath(); ctx.fillStyle = colors[i % colors.length]; ctx.fill();
+    ctx.closePath();
+    ctx.fillStyle = colors[i % colors.length];
+    ctx.fill();
     startAngle += angle;
   });
+  // Inner cutout for donut
+  ctx.beginPath();
+  ctx.arc(cx, cy, r * 0.65, 0, Math.PI * 2);
+  ctx.fillStyle = root.getPropertyValue('--card-bg').trim() || '#1E293B';
+  ctx.fill();
+  
   const legend = entries.map(([l, c], i) =>
-    `<span style="display:inline-flex;align-items:center;gap:5px;margin-right:12px;font-size:12px;">
-      <span style="width:10px;height:10px;background:${colors[i % colors.length]};display:inline-block;border-radius:2px;"></span>${esc(l)} (${c})
+    `<span style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary)">
+      <span style="width:12px;height:12px;background:${colors[i % colors.length]};border-radius:3px;"></span>
+      ${esc(l)} <span style="font-weight:600;color:var(--text-primary)">${c}</span>
     </span>`).join("");
-  document.getElementById("diversityChart").insertAdjacentHTML("afterend", `<div style="margin-top:10px;">${legend}</div>`);
+  document.getElementById("diversityLegend").innerHTML = legend;
 
   const depts = await api("/departments");
   document.getElementById("deptBreakdown").innerHTML = `<table><thead><tr><th>Department</th><th>Employees</th></tr></thead><tbody>` +
-    depts.map(d => `<tr><td>${esc(d.name)}</td><td>${d.employee_count}</td></tr>`).join("") + `</tbody></table>`;
+    depts.map(d => `<tr><td style="font-weight:500;color:var(--text-primary)">${esc(d.name)}</td><td style="font-weight:600">${d.employee_count}</td></tr>`).join("") + `</tbody></table>`;
 }
+
+function openModal(id) { document.getElementById(id).style.display = "flex"; }
+function closeModal(id) { document.getElementById(id).style.display = "none"; }
+window.openModal = openModal;
 
 document.getElementById("csrForm").addEventListener("submit", async e => {
   e.preventDefault();

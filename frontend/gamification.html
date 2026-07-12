@@ -4,56 +4,75 @@
 <meta charset="UTF-8">
 <title>EcoSphere - Gamification</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 <div class="app-shell">
   <div class="sidebar" id="sidebar"></div>
   <div class="main">
     <div class="topbar" id="topbar"></div>
-    <div class="tabs" id="tabs"></div>
     <div class="content">
 
-      <div class="subtabs">
-        <button class="gam active" onclick="showPanel('challengesPanel', this)">Challenges</button>
-        <button class="gam" onclick="showPanel('participationPanel', this)">Challenge Participation</button>
-        <button class="gam" onclick="showPanel('badgesPanel', this)">Badges</button>
-        <button class="gam" onclick="showPanel('rewardsPanel', this)">Rewards</button>
-        <button class="gam" onclick="showPanel('leaderboardPanel', this)">Leaderboard</button>
+      <div class="subtabs" style="display:flex; gap:8px; margin-bottom:24px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+        <button class="btn btn-outline gam active" onclick="showPanel('challengesPanel', this)" style="border-radius:20px"><i data-lucide="flag" class="icon"></i> Challenges</button>
+        <button class="btn btn-outline gam" onclick="showPanel('participationPanel', this)" style="border-radius:20px"><i data-lucide="users" class="icon"></i> Participation</button>
+        <button class="btn btn-outline gam" onclick="showPanel('badgesPanel', this)" style="border-radius:20px"><i data-lucide="award" class="icon"></i> Badges</button>
+        <button class="btn btn-outline gam" onclick="showPanel('rewardsPanel', this)" style="border-radius:20px"><i data-lucide="gift" class="icon"></i> Rewards</button>
+        <button class="btn btn-outline gam" onclick="showPanel('leaderboardPanel', this)" style="border-radius:20px"><i data-lucide="bar-chart-2" class="icon"></i> Leaderboard</button>
       </div>
 
       <!-- Challenges -->
       <div id="challengesPanel" class="panel active">
-        <div class="toolbar"><button class="btn btn-orange" onclick="openModal('challengeModal')">+ New Challenge</button></div>
-        <div class="toolbar" id="statusFilterBar"></div>
+        <div class="flex-between mb-4">
+          <button class="btn btn-gam" onclick="openModal('challengeModal')"><i data-lucide="plus" class="icon"></i> New Challenge</button>
+          <div id="statusFilterBar" style="display:flex; gap:8px;"></div>
+        </div>
         <div class="grid grid-3" id="challengeCards"></div>
       </div>
 
       <!-- Challenge Participation -->
-      <div id="participationPanel" class="panel">
-        <div class="toolbar"><button class="btn btn-orange" onclick="openModal('joinChallengeModal')">+ Join Challenge</button></div>
-        <div class="table-wrap">
-          <table><thead><tr><th>Employee</th><th>Challenge</th><th>Progress</th><th>Proof</th><th>Approval</th><th>XP</th><th>Action</th></tr></thead>
-          <tbody id="participationTable"><tr><td colspan="7" class="empty-state">Loading...</td></tr></tbody></table>
+      <div id="participationPanel" class="panel" style="display:none">
+        <div class="card fade-in">
+          <div class="flex-between mb-4">
+            <button class="btn btn-gam" onclick="openModal('joinChallengeModal')"><i data-lucide="plus" class="icon"></i> Join Challenge</button>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Employee</th><th>Challenge</th><th>Progress</th><th>Proof</th><th>Approval</th><th>XP</th><th>Action</th></tr></thead>
+              <tbody id="participationTable"><tr><td colspan="7" class="text-muted text-center" style="padding:40px">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- Badges -->
-      <div id="badgesPanel" class="panel">
-        <h4>🏅 Badge Gallery</h4>
+      <div id="badgesPanel" class="panel" style="display:none">
+        <div class="flex-between mb-4">
+          <h3 class="mt-0 color-gam flex-center" style="margin:0"><i data-lucide="award" class="icon"></i> Badge Gallery</h3>
+        </div>
         <div class="grid grid-4" id="badgeGrid"></div>
       </div>
 
       <!-- Rewards -->
-      <div id="rewardsPanel" class="panel">
-        <div class="toolbar"><button class="btn btn-orange" onclick="openModal('rewardModal')">+ New Reward</button></div>
-        <div class="grid grid-3" id="rewardGrid"></div>
+      <div id="rewardsPanel" class="panel" style="display:none">
+        <div class="flex-between mb-4">
+          <button class="btn btn-gam" onclick="openModal('rewardModal')"><i data-lucide="plus" class="icon"></i> New Reward</button>
+        </div>
+        <div class="grid grid-4" id="rewardGrid"></div>
       </div>
 
       <!-- Leaderboard -->
-      <div id="leaderboardPanel" class="panel">
-        <div class="table-wrap">
-          <table><thead><tr><th>Rank</th><th>Employee</th><th>Department</th><th>XP</th></tr></thead>
-          <tbody id="leaderboardTable"><tr><td colspan="4" class="empty-state">Loading...</td></tr></tbody></table>
+      <div id="leaderboardPanel" class="panel" style="display:none">
+        <div class="card fade-in">
+          <div class="card-header">
+            <div class="card-title color-gam"><i data-lucide="bar-chart-2" class="icon color-gam"></i> Global Leaderboard</div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Rank</th><th>Employee</th><th>Department</th><th>Total XP</th></tr></thead>
+              <tbody id="leaderboardTable"><tr><td colspan="4" class="text-muted text-center" style="padding:40px">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -61,76 +80,81 @@
   </div>
 </div>
 
-<!-- Challenge Modal -->
-<div class="modal-backdrop" id="challengeModal">
-  <div class="modal">
-    <h3>New Challenge</h3>
+<!-- Modals -->
+<div class="modal-backdrop" id="challengeModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:480px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="flag" class="icon color-gam"></i> New Challenge</h3>
     <form id="challengeForm">
-      <div class="form-row"><label>Title</label><input name="title" required></div>
-      <div class="form-row"><label>Description</label><textarea name="description"></textarea></div>
-      <div class="form-row"><label>XP</label><input type="number" name="xp" value="100" required></div>
-      <div class="form-row"><label>Difficulty</label>
-        <select name="difficulty"><option>Easy</option><option>Medium</option><option>Hard</option></select>
+      <div class="form-group"><label class="form-label">Title</label><input class="form-control" name="title" required></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" name="description" rows="3"></textarea></div>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">XP Reward</label><input class="form-control" type="number" name="xp" value="100" required></div>
+        <div class="form-group"><label class="form-label">Difficulty</label>
+          <select class="form-control" name="difficulty"><option>Easy</option><option>Medium</option><option>Hard</option></select>
+        </div>
       </div>
-      <div class="form-row"><label>Evidence Required?</label>
-        <select name="evidence_required"><option value="1">Yes</option><option value="0">No</option></select>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Evidence Required?</label>
+          <select class="form-control" name="evidence_required"><option value="1">Yes</option><option value="0">No</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Deadline</label><input class="form-control" type="date" name="deadline" required></div>
       </div>
-      <div class="form-row"><label>Deadline</label><input type="date" name="deadline" required></div>
-      <div class="form-row"><label>Status</label>
-        <select name="status"><option>Draft</option><option>Active</option><option>Under Review</option><option>Completed</option><option>Archived</option></select>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" name="status"><option>Draft</option><option selected>Active</option><option>Under Review</option><option>Completed</option><option>Archived</option></select>
       </div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-orange">Save</button>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('challengeModal')">Cancel</button>
+        <button type="submit" class="btn btn-gam">Save Challenge</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Join Challenge Modal -->
-<div class="modal-backdrop" id="joinChallengeModal">
-  <div class="modal">
-    <h3>Join Challenge</h3>
+<div class="modal-backdrop" id="joinChallengeModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:480px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="users" class="icon color-gam"></i> Join Challenge</h3>
     <form id="joinChallengeForm">
-      <div class="form-row"><label>Employee</label><select name="employee_id" id="jcEmployee" required></select></div>
-      <div class="form-row"><label>Challenge</label><select name="challenge_id" id="jcChallenge" required></select></div>
-      <div class="form-row"><label>Progress %</label><input type="number" name="progress" value="0"></div>
-      <div class="form-row"><label>Proof file name (optional)</label><input name="proof_file"></div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-orange">Submit</button>
+      <div class="form-group"><label class="form-label">Employee</label><select class="form-control" name="employee_id" id="jcEmployee" required></select></div>
+      <div class="form-group"><label class="form-label">Challenge</label><select class="form-control" name="challenge_id" id="jcChallenge" required></select></div>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Progress %</label><input class="form-control" type="number" name="progress" value="0"></div>
+        <div class="form-group"><label class="form-label">Proof File</label><input class="form-control" name="proof_file" placeholder="e.g. photo.jpg"></div>
+      </div>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('joinChallengeModal')">Cancel</button>
+        <button type="submit" class="btn btn-gam">Submit Entry</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Reward Modal -->
-<div class="modal-backdrop" id="rewardModal">
-  <div class="modal">
-    <h3>New Reward</h3>
+<div class="modal-backdrop" id="rewardModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:480px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="gift" class="icon color-gam"></i> New Reward</h3>
     <form id="rewardForm">
-      <div class="form-row"><label>Name</label><input name="name" required></div>
-      <div class="form-row"><label>Description</label><input name="description"></div>
-      <div class="form-row"><label>Points Required</label><input type="number" name="points_required" required></div>
-      <div class="form-row"><label>Stock</label><input type="number" name="stock" value="10"></div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-orange">Save</button>
+      <div class="form-group"><label class="form-label">Name</label><input class="form-control" name="name" required></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" name="description" rows="2"></textarea></div>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Points Required</label><input class="form-control" type="number" name="points_required" required></div>
+        <div class="form-group"><label class="form-label">Stock</label><input class="form-control" type="number" name="stock" value="10"></div>
+      </div>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('rewardModal')">Cancel</button>
+        <button type="submit" class="btn btn-gam">Save Reward</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Redeem Modal -->
-<div class="modal-backdrop" id="redeemModal">
-  <div class="modal">
-    <h3>Redeem Reward</h3>
+<div class="modal-backdrop" id="redeemModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:400px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="shopping-bag" class="icon color-gam"></i> Redeem Reward</h3>
     <form id="redeemForm">
       <input type="hidden" name="reward_id" id="redeemRewardId">
-      <div class="form-row"><label>Employee</label><select name="employee_id" id="redeemEmployee" required></select></div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-orange">Redeem</button>
+      <div class="form-group"><label class="form-label">Select Employee</label><select class="form-control" name="employee_id" id="redeemEmployee" required></select></div>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('redeemModal')">Cancel</button>
+        <button type="submit" class="btn btn-gam">Redeem</button>
       </div>
     </form>
   </div>
@@ -138,14 +162,29 @@
 
 <script src="app.js"></script>
 <script>
-renderShell("gamification.html", "Gamification");
+renderShell("gamification.html", "Gamification Module");
 let EMPLOYEES = [], CHALLENGES = [];
 const STATUS_ORDER = ["Draft", "Active", "Under Review", "Completed", "Archived"];
 
-function statusPill(status) {
-  const map = { Draft: "gray", Active: "green", "Under Review": "purple", Completed: "blue", Archived: "gray",
-    Pending: "yellow", Approved: "green", Rejected: "red" };
-  return `<span class="pill pill-${map[status] || 'gray'}">${esc(status)}</span>`;
+function showPanel(name, btnEl) {
+  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+  document.getElementById(name).style.display = 'block';
+  document.querySelectorAll('.subtabs button').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = 'transparent';
+    b.style.color = 'var(--text-primary)';
+  });
+  btnEl.classList.add('active');
+  btnEl.style.background = 'var(--gam-bg)';
+  btnEl.style.color = 'var(--gam)';
+  btnEl.style.borderColor = 'var(--gam)';
+}
+document.querySelector('.subtabs button').click();
+
+function statusBadge(status) {
+  const map = { Draft: "info", Active: "success", "Under Review": "warning", Completed: "success", Archived: "info",
+    Pending: "warning", Approved: "success", Rejected: "error" };
+  return `<span class="badge badge-${map[status] || 'info'}">${esc(status)}</span>`;
 }
 
 async function loadEmployees() {
@@ -158,8 +197,8 @@ async function loadEmployees() {
 async function loadChallenges() {
   CHALLENGES = await api("/challenges");
   document.getElementById("statusFilterBar").innerHTML = STATUS_ORDER.map(s =>
-    `<span class="pill pill-${s === 'Active' ? 'green' : s === 'Under Review' ? 'purple' : s === 'Completed' ? 'blue' : 'gray'}" style="cursor:pointer;" onclick="filterChallenges('${s}')">${s}</span>`
-  ).join(" ");
+    `<button class="btn btn-outline" style="border-radius:20px; font-size:12px; padding:4px 10px;" onclick="filterChallenges('${s}')">${s}</button>`
+  ).join(" ") + `<button class="btn btn-outline" style="border-radius:20px; font-size:12px; padding:4px 10px;" onclick="renderChallengeCards(CHALLENGES)">All</button>`;
 
   renderChallengeCards(CHALLENGES);
   document.getElementById("jcChallenge").innerHTML =
@@ -167,15 +206,28 @@ async function loadChallenges() {
 }
 
 function renderChallengeCards(list) {
-  document.getElementById("challengeCards").innerHTML = list.map(c => `
-    <div class="card" style="border-color:var(--orange);">
-      <h4>🏅 ${esc(c.title)}</h4>
-      <p class="muted" style="font-size:12px;">XP: ${c.xp} • ${esc(c.difficulty)}</p>
-      <p class="muted" style="font-size:12px;">Deadline ${fmtDate(c.deadline)}</p>
-      <p>${statusPill(c.status)}</p>
-      <button class="btn btn-orange btn-sm" onclick="quickJoinChallenge(${c.id})">Join Challenge</button>
-    </div>
-  `).join("") || `<p class="empty-state">No challenges yet.</p>`;
+  const grid = document.getElementById("challengeCards");
+  if (!list.length) {
+    grid.innerHTML = `<div class="card" style="grid-column:span 3"><p class="text-muted text-center" style="padding:40px">No challenges found.</p></div>`;
+  } else {
+    grid.innerHTML = list.map(c => `
+      <div class="card fade-in" style="display:flex; flex-direction:column; justify-content:space-between; border-top: 3px solid var(--gam);">
+        <div>
+          <div class="flex-between mb-4">
+            ${statusBadge(c.status)}
+            <span class="badge badge-warning"><i data-lucide="zap" class="icon" style="width:12px;height:12px;margin-right:2px"></i> ${c.xp} XP</span>
+          </div>
+          <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:16px">${esc(c.title)}</h4>
+          <p class="text-muted" style="font-size:13px; line-height:1.5">${esc(c.difficulty)} Difficulty</p>
+        </div>
+        <div class="mt-4">
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom:12px"><i data-lucide="clock" class="icon" style="width:12px;height:12px"></i> Ends ${fmtDate(c.deadline)}</div>
+          <button class="btn btn-gam" style="width:100%" onclick="quickJoinChallenge(${c.id})">Join Challenge</button>
+        </div>
+      </div>
+    `).join("");
+    lucide.createIcons();
+  }
 }
 
 function filterChallenges(status) {
@@ -189,14 +241,28 @@ function quickJoinChallenge(id) {
 
 async function loadParticipation() {
   const rows = await api("/challenge-participation");
-  document.getElementById("participationTable").innerHTML = rows.map(r => `<tr>
-    <td>${esc(r.employee_name)}</td><td>${esc(r.challenge_title)}</td><td>${r.progress}%</td>
-    <td>${esc(r.proof_file || '-')}</td><td>${statusPill(r.approval_status)}</td><td>${r.xp_awarded}</td>
-    <td>${r.approval_status === 'Pending' ? `
-      <button class="btn btn-blue btn-sm" onclick="decideChallenge(${r.id}, 'Approved')">Approve</button>
-      <button class="btn btn-red btn-sm" onclick="decideChallenge(${r.id}, 'Rejected')">Reject</button>
-    ` : '-'}</td>
-  </tr>`).join("") || `<tr><td colspan="7" class="empty-state">No challenge participation yet.</td></tr>`;
+  const tbody = document.getElementById("participationTable");
+  if (!rows.length) { tbody.innerHTML = `<tr><td colspan="7" class="text-muted text-center" style="padding:40px">No challenge participation yet.</td></tr>`; return; }
+  tbody.innerHTML = rows.map(r => `<tr>
+    <td style="font-weight:500; color:var(--text-primary)">${esc(r.employee_name)}</td>
+    <td>${esc(r.challenge_title)}</td>
+    <td style="min-width:120px;">
+      <div style="background:var(--border); height:6px; border-radius:3px; margin-bottom:4px; overflow:hidden">
+        <div style="width:${r.progress}%; background:var(--gam); height:100%; border-radius:3px"></div>
+      </div>
+      <span class="text-muted" style="font-size:11px;">${r.progress}% Complete</span>
+    </td>
+    <td>${r.proof_file ? `<a href="#" class="color-gam"><i data-lucide="paperclip" class="icon" style="width:14px;height:14px"></i> ${esc(r.proof_file)}</a>` : '<span class="text-muted">—</span>'}</td>
+    <td>${statusBadge(r.approval_status)}</td>
+    <td style="font-weight:600; color:var(--gam)">${r.xp_awarded}</td>
+    <td>
+      ${r.approval_status === 'Pending' ? `
+        <button class="topbar-btn" style="display:inline-flex;color:var(--success);width:28px;height:28px;margin-right:4px" onclick="decideChallenge(${r.id}, 'Approved')" title="Approve"><i data-lucide="check" class="icon" style="width:14px;height:14px"></i></button>
+        <button class="topbar-btn" style="display:inline-flex;color:var(--error);width:28px;height:28px" onclick="decideChallenge(${r.id}, 'Rejected')" title="Reject"><i data-lucide="x" class="icon" style="width:14px;height:14px"></i></button>
+      ` : '<span class="text-muted">—</span>'}
+    </td>
+  </tr>`).join("");
+  lucide.createIcons();
 }
 
 async function decideChallenge(id, decision) {
@@ -208,25 +274,45 @@ async function decideChallenge(id, decision) {
 
 async function loadBadges() {
   const badges = await api("/badges");
-  document.getElementById("badgeGrid").innerHTML = badges.map(b => `
-    <div class="card" style="text-align:center;border-color:var(--orange);background:#fff8f0;">
-      <div style="font-size:26px;">🏅</div>
-      <h4>${esc(b.name)}</h4>
-      <p class="muted" style="font-size:12px;">${esc(b.description || '')}</p>
+  const grid = document.getElementById("badgeGrid");
+  if (!badges.length) { grid.innerHTML = `<div class="card" style="grid-column:span 4"><p class="text-muted text-center" style="padding:40px">No badges configured yet.</p></div>`; return; }
+  grid.innerHTML = badges.map(b => `
+    <div class="card fade-in flex-center" style="flex-direction:column; padding:32px 24px; text-align:center; border: 1px solid var(--gam-bg); background: linear-gradient(180deg, var(--card-bg) 0%, rgba(245, 158, 11, 0.05) 100%);">
+      <div class="bg-gam flex-center" style="width:64px; height:64px; border-radius:50%; margin-bottom:16px;">
+        <i data-lucide="award" class="icon color-gam" style="width:32px; height:32px;"></i>
+      </div>
+      <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:16px">${esc(b.name)}</h4>
+      <p class="text-muted" style="font-size:13px; line-height:1.5">${esc(b.description || '')}</p>
     </div>
-  `).join("") || `<p class="empty-state">No badges configured yet.</p>`;
+  `).join("");
+  lucide.createIcons();
 }
 
 async function loadRewards() {
   const rewards = await api("/rewards");
-  document.getElementById("rewardGrid").innerHTML = rewards.map(r => `
-    <div class="card">
-      <h4>🎁 ${esc(r.name)}</h4>
-      <p class="muted" style="font-size:12px;">${esc(r.description || '')}</p>
-      <p style="font-size:13px;">${r.points_required} pts • Stock: ${r.stock}</p>
-      <button class="btn btn-orange btn-sm" onclick="openRedeem(${r.id})" ${r.stock <= 0 ? 'disabled' : ''}>Redeem</button>
+  const grid = document.getElementById("rewardGrid");
+  if (!rewards.length) { grid.innerHTML = `<div class="card" style="grid-column:span 4"><p class="text-muted text-center" style="padding:40px">No rewards yet.</p></div>`; return; }
+  grid.innerHTML = rewards.map(r => `
+    <div class="card fade-in" style="display:flex; flex-direction:column; justify-content:space-between">
+      <div>
+        <div class="flex-center bg-gam" style="width:48px;height:48px;border-radius:12px;margin-bottom:16px">
+          <i data-lucide="gift" class="icon color-gam"></i>
+        </div>
+        <h4 style="margin:0 0 8px; color:var(--text-primary); font-size:16px">${esc(r.name)}</h4>
+        <p class="text-muted" style="font-size:13px; line-height:1.5">${esc(r.description || '')}</p>
+      </div>
+      <div class="mt-4 pt-4" style="border-top:1px solid var(--border)">
+        <div class="flex-between mb-4">
+          <span style="font-weight:600; color:var(--gam)">${r.points_required} XP</span>
+          <span class="text-muted" style="font-size:12px">${r.stock} left</span>
+        </div>
+        <button class="btn btn-outline" style="width:100%; color:var(--gam); border-color:var(--gam)" onclick="openRedeem(${r.id})" ${r.stock <= 0 ? 'disabled' : ''}>
+          ${r.stock <= 0 ? 'Out of Stock' : 'Redeem Reward'}
+        </button>
+      </div>
     </div>
-  `).join("") || `<p class="empty-state">No rewards yet.</p>`;
+  `).join("");
+  lucide.createIcons();
 }
 
 function openRedeem(rewardId) {
@@ -236,10 +322,24 @@ function openRedeem(rewardId) {
 
 async function loadLeaderboard() {
   const rows = await api("/leaderboard");
-  document.getElementById("leaderboardTable").innerHTML = rows.map((r, i) => `<tr>
-    <td>${i + 1}</td><td>${esc(r.name)}</td><td>${esc(r.department || '-')}</td><td>${r.xp_total}</td>
-  </tr>`).join("") || `<tr><td colspan="4" class="empty-state">No leaderboard data yet.</td></tr>`;
+  const tbody = document.getElementById("leaderboardTable");
+  if (!rows.length) { tbody.innerHTML = `<tr><td colspan="4" class="text-muted text-center" style="padding:40px">No leaderboard data yet.</td></tr>`; return; }
+  tbody.innerHTML = rows.map((r, i) => `<tr>
+    <td style="font-weight:600; color:${i < 3 ? 'var(--gam)' : 'var(--text-secondary)'}; font-size:${i < 3 ? '18px' : '14px'}">#${i + 1}</td>
+    <td style="font-weight:500; color:var(--text-primary)">
+      <div style="display:flex; align-items:center; gap:10px">
+        <div class="profile-avatar bg-gam" style="width:32px;height:32px;color:#fff">${esc(r.name).charAt(0)}</div>
+        ${esc(r.name)}
+      </div>
+    </td>
+    <td><span class="badge badge-info">${esc(r.department || '-')}</span></td>
+    <td style="font-weight:700; color:var(--gam); font-size:16px">${r.xp_total} XP</td>
+  </tr>`).join("");
 }
+
+function openModal(id) { document.getElementById(id).style.display = "flex"; }
+function closeModal(id) { document.getElementById(id).style.display = "none"; }
+window.openModal = openModal;
 
 document.getElementById("challengeForm").addEventListener("submit", async e => {
   e.preventDefault();

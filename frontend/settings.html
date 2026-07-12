@@ -4,64 +4,73 @@
 <meta charset="UTF-8">
 <title>EcoSphere - Settings</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 <div class="app-shell">
   <div class="sidebar" id="sidebar"></div>
   <div class="main">
     <div class="topbar" id="topbar"></div>
-    <div class="tabs" id="tabs"></div>
     <div class="content">
 
-      <div class="subtabs">
-        <button class="active" onclick="showPanel('deptPanel', this)">Departments</button>
-        <button onclick="showPanel('catPanel', this)">Categories</button>
-        <button onclick="showPanel('configPanel', this)">ESG Configuration</button>
-        <button onclick="showPanel('notifPanel', this)">Notification Settings</button>
+      <div class="subtabs" style="display:flex; gap:8px; margin-bottom:24px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+        <button class="btn btn-outline active" onclick="showPanel('deptPanel', this)" style="border-radius:20px"><i data-lucide="building" class="icon"></i> Departments</button>
+        <button class="btn btn-outline" onclick="showPanel('catPanel', this)" style="border-radius:20px"><i data-lucide="tag" class="icon"></i> Categories</button>
+        <button class="btn btn-outline" onclick="showPanel('configPanel', this)" style="border-radius:20px"><i data-lucide="sliders" class="icon"></i> ESG Config</button>
+        <button class="btn btn-outline" onclick="showPanel('notifPanel', this)" style="border-radius:20px"><i data-lucide="bell" class="icon"></i> Notifications</button>
       </div>
 
       <!-- Departments -->
       <div id="deptPanel" class="panel active">
-        <div class="toolbar">
-          <button class="btn btn-dark" onclick="openModal('deptModal')">+ New Department</button>
-        </div>
-        <div class="table-wrap">
-          <table><thead><tr><th>Name</th><th>Code</th><th>Head</th><th>Parent Dept</th><th>Employees</th><th>Status</th><th></th></tr></thead>
-          <tbody id="deptTable"><tr><td colspan="7" class="empty-state">Loading...</td></tr></tbody></table>
+        <div class="card fade-in">
+          <div class="flex-between mb-4">
+            <button class="btn btn-primary" onclick="openModal('deptModal')"><i data-lucide="plus" class="icon"></i> New Department</button>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Name</th><th>Code</th><th>Head</th><th>Parent Dept</th><th>Employees</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="deptTable"><tr><td colspan="7" class="text-muted text-center" style="padding:40px">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- Categories -->
-      <div id="catPanel" class="panel">
-        <div class="toolbar">
-          <button class="btn btn-dark" onclick="openModal('catModal')">+ New Category</button>
-        </div>
-        <div class="table-wrap">
-          <table><thead><tr><th>Name</th><th>Type</th><th>Status</th><th></th></tr></thead>
-          <tbody id="catTable"><tr><td colspan="4" class="empty-state">Loading...</td></tr></tbody></table>
+      <div id="catPanel" class="panel" style="display:none">
+        <div class="card fade-in">
+          <div class="flex-between mb-4">
+            <button class="btn btn-primary" onclick="openModal('catModal')"><i data-lucide="plus" class="icon"></i> New Category</button>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="catTable"><tr><td colspan="4" class="text-muted text-center" style="padding:40px">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- ESG Configuration -->
-      <div id="configPanel" class="panel">
-        <div class="card">
-          <h4>ESG Configuration &amp; Notifications</h4>
-          <div id="configToggles"></div>
-          <h4 style="margin-top:20px;">Score Weighting (%)</h4>
-          <div class="grid grid-3">
-            <div class="form-row"><label>Environmental Weight</label><input type="number" id="wEnv"></div>
-            <div class="form-row"><label>Social Weight</label><input type="number" id="wSoc"></div>
-            <div class="form-row"><label>Governance Weight</label><input type="number" id="wGov"></div>
+      <div id="configPanel" class="panel" style="display:none">
+        <div class="card fade-in">
+          <h4 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="sliders" class="icon"></i> System Features</h4>
+          <div id="configToggles" class="grid grid-2 gap-4 mb-4 pb-4" style="border-bottom: 1px solid var(--border)"></div>
+          
+          <h4 class="mt-4 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="bar-chart" class="icon"></i> Score Weighting (%)</h4>
+          <div class="grid grid-3 gap-4 mb-4">
+            <div class="form-group mb-0"><label class="form-label color-env">Environmental Weight</label><input class="form-control" type="number" id="wEnv"></div>
+            <div class="form-group mb-0"><label class="form-label color-soc">Social Weight</label><input class="form-control" type="number" id="wSoc"></div>
+            <div class="form-group mb-0"><label class="form-label color-gov">Governance Weight</label><input class="form-control" type="number" id="wGov"></div>
           </div>
-          <button class="btn btn-dark" onclick="saveWeights()">Save Weights</button>
+          <button class="btn btn-primary" onclick="saveWeights()"><i data-lucide="save" class="icon"></i> Save Weights</button>
         </div>
       </div>
 
       <!-- Notification Settings -->
-      <div id="notifPanel" class="panel">
-        <div class="card">
-          <h4>Notification Settings</h4>
-          <div id="notifToggles"></div>
+      <div id="notifPanel" class="panel" style="display:none">
+        <div class="card fade-in">
+          <h4 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="bell" class="icon"></i> Email Notifications</h4>
+          <div id="notifToggles" class="grid grid-2 gap-4"></div>
         </div>
       </div>
 
@@ -69,44 +78,80 @@
   </div>
 </div>
 
-<!-- Department Modal -->
-<div class="modal-backdrop" id="deptModal">
-  <div class="modal">
-    <h3>New Department</h3>
+<!-- Modals -->
+<div class="modal-backdrop" id="deptModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:480px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="building" class="icon"></i> New Department</h3>
     <form id="deptForm">
-      <div class="form-row"><label>Name</label><input name="name" required></div>
-      <div class="form-row"><label>Code</label><input name="code" required></div>
-      <div class="form-row"><label>Head</label><input name="head"></div>
-      <div class="form-row"><label>Parent Department</label><select name="parent_department_id" id="parentDeptSelect"><option value="">None</option></select></div>
-      <div class="form-row"><label>Employee Count</label><input type="number" name="employee_count" value="0"></div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-dark">Save</button>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Name</label><input class="form-control" name="name" required></div>
+        <div class="form-group"><label class="form-label">Code</label><input class="form-control" name="code" required></div>
+      </div>
+      <div class="form-group"><label class="form-label">Head</label><input class="form-control" name="head"></div>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Parent Department</label><select class="form-control" name="parent_department_id" id="parentDeptSelect"><option value="">None</option></select></div>
+        <div class="form-group"><label class="form-label">Employee Count</label><input class="form-control" type="number" name="employee_count" value="0"></div>
+      </div>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('deptModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Department</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Category Modal -->
-<div class="modal-backdrop" id="catModal">
-  <div class="modal">
-    <h3>New Category</h3>
+<div class="modal-backdrop" id="catModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:400px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="tag" class="icon"></i> New Category</h3>
     <form id="catForm">
-      <div class="form-row"><label>Name</label><input name="name" required></div>
-      <div class="form-row"><label>Type</label>
-        <select name="type"><option value="CSR Activity">CSR Activity</option><option value="Challenge">Challenge</option></select>
+      <div class="form-group"><label class="form-label">Name</label><input class="form-control" name="name" required></div>
+      <div class="form-group"><label class="form-label">Type</label>
+        <select class="form-control" name="type"><option value="CSR Activity">CSR Activity</option><option value="Challenge">Challenge</option></select>
       </div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-dark">Save</button>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('catModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Category</button>
       </div>
     </form>
   </div>
 </div>
+
+<style>
+/* Custom toggle switch styling for settings */
+.toggle-switch {
+  position: relative; display: inline-block; width: 44px; height: 24px;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--border); transition: .4s; border-radius: 24px;
+}
+.toggle-slider:before {
+  position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+  background-color: white; transition: .4s; border-radius: 50%;
+}
+input:checked + .toggle-slider { background-color: var(--primary); }
+input:checked + .toggle-slider:before { transform: translateX(20px); }
+</style>
 
 <script src="app.js"></script>
 <script>
 renderShell("settings.html", "Settings");
+
+function showPanel(name, btnEl) {
+  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+  document.getElementById(name).style.display = 'block';
+  document.querySelectorAll('.subtabs button').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = 'transparent';
+    b.style.color = 'var(--text-primary)';
+  });
+  btnEl.classList.add('active');
+  btnEl.style.background = 'var(--surface)';
+  btnEl.style.color = 'var(--text-primary)';
+  btnEl.style.borderColor = 'var(--border-hover)';
+}
+document.querySelector('.subtabs button').click();
 
 const CONFIG_LABELS = {
   auto_emission_calculation: "Enable auto emission calculation",
@@ -122,8 +167,8 @@ const NOTIF_LABELS = {
   badge_unlock: "Badge unlocks",
 };
 
-function statusPill(status) {
-  return `<span class="pill pill-green">${esc(status)}</span>`;
+function statusBadge(status) {
+  return `<span class="badge badge-success">${esc(status)}</span>`;
 }
 
 async function loadDepartments() {
@@ -133,11 +178,16 @@ async function loadDepartments() {
   document.getElementById("deptTable").innerHTML = rows.map(d => {
     const parent = rows.find(p => p.id === d.parent_department_id);
     return `<tr>
-      <td>${esc(d.name)}</td><td>${esc(d.code)}</td><td>${esc(d.head || '-')}</td>
-      <td>${parent ? esc(parent.name) : '—'}</td><td>${d.employee_count}</td><td>${statusPill(d.status)}</td>
-      <td><button class="btn btn-red btn-sm" onclick="deleteDept(${d.id})">Delete</button></td>
+      <td style="font-weight:500; color:var(--text-primary)">${esc(d.name)}</td>
+      <td><span class="badge badge-info">${esc(d.code)}</span></td>
+      <td>${esc(d.head || '-')}</td>
+      <td>${parent ? esc(parent.name) : '<span class="text-muted">—</span>'}</td>
+      <td style="font-weight:600">${d.employee_count}</td>
+      <td>${statusBadge(d.status)}</td>
+      <td><button class="topbar-btn" style="color:var(--error); width:28px;height:28px" onclick="deleteDept(${d.id})"><i data-lucide="trash-2" class="icon" style="width:14px;height:14px"></i></button></td>
     </tr>`;
-  }).join("") || `<tr><td colspan="7" class="empty-state">No departments yet.</td></tr>`;
+  }).join("") || `<tr><td colspan="7" class="text-muted text-center" style="padding:40px">No departments yet.</td></tr>`;
+  lucide.createIcons();
 }
 
 async function deleteDept(id) {
@@ -149,9 +199,12 @@ async function deleteDept(id) {
 async function loadCategories() {
   const rows = await api("/categories");
   document.getElementById("catTable").innerHTML = rows.map(c => `<tr>
-    <td>${esc(c.name)}</td><td>${esc(c.type)}</td><td>${statusPill(c.status)}</td>
-    <td><button class="btn btn-red btn-sm" onclick="deleteCat(${c.id})">Delete</button></td>
-  </tr>`).join("") || `<tr><td colspan="4" class="empty-state">No categories yet.</td></tr>`;
+    <td style="font-weight:500; color:var(--text-primary)">${esc(c.name)}</td>
+    <td><span class="badge badge-warning">${esc(c.type)}</span></td>
+    <td>${statusBadge(c.status)}</td>
+    <td><button class="topbar-btn" style="color:var(--error); width:28px;height:28px" onclick="deleteCat(${c.id})"><i data-lucide="trash-2" class="icon" style="width:14px;height:14px"></i></button></td>
+  </tr>`).join("") || `<tr><td colspan="4" class="text-muted text-center" style="padding:40px">No categories yet.</td></tr>`;
+  lucide.createIcons();
 }
 
 async function deleteCat(id) {
@@ -164,9 +217,12 @@ async function loadConfig() {
   const rows = await api("/esg-config");
   const map = Object.fromEntries(rows.map(r => [r.key, r.value]));
   document.getElementById("configToggles").innerHTML = Object.entries(CONFIG_LABELS).map(([key, label]) => `
-    <div class="form-row" style="display:flex;align-items:center;gap:10px;">
-      <input type="checkbox" style="width:auto;" id="cfg_${key}" ${map[key] === 'true' ? 'checked' : ''} onchange="toggleConfig('${key}', this.checked)">
-      <label style="margin:0;">${label}</label>
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:8px;">
+      <span style="font-size:14px; font-weight:500">${label}</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="cfg_${key}" ${map[key] === 'true' ? 'checked' : ''} onchange="toggleConfig('${key}', this.checked)">
+        <span class="toggle-slider"></span>
+      </label>
     </div>
   `).join("");
   document.getElementById("wEnv").value = map.env_weight || 40;
@@ -195,9 +251,12 @@ async function loadNotifSettings() {
   const rows = await api("/notification-settings");
   const map = Object.fromEntries(rows.map(r => [r.key, r.enabled]));
   document.getElementById("notifToggles").innerHTML = Object.entries(NOTIF_LABELS).map(([key, label]) => `
-    <div class="form-row" style="display:flex;align-items:center;gap:10px;">
-      <input type="checkbox" style="width:auto;" ${map[key] ? 'checked' : ''} onchange="toggleNotif('${key}', this.checked)">
-      <label style="margin:0;">${label}</label>
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:8px;">
+      <span style="font-size:14px; font-weight:500">${label}</span>
+      <label class="toggle-switch">
+        <input type="checkbox" ${map[key] ? 'checked' : ''} onchange="toggleNotif('${key}', this.checked)">
+        <span class="toggle-slider"></span>
+      </label>
     </div>
   `).join("");
 }
@@ -206,6 +265,10 @@ async function toggleNotif(key, checked) {
   await api(`/notification-settings/${key}`, { method: "PUT", body: { enabled: checked } });
   toast("Notification setting updated");
 }
+
+function openModal(id) { document.getElementById(id).style.display = "flex"; }
+function closeModal(id) { document.getElementById(id).style.display = "none"; }
+window.openModal = openModal;
 
 document.getElementById("deptForm").addEventListener("submit", async e => {
   e.preventDefault();

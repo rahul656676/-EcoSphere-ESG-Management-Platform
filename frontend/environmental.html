@@ -4,85 +4,109 @@
 <meta charset="UTF-8">
 <title>EcoSphere - Environmental</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 <div class="app-shell">
   <div class="sidebar" id="sidebar"></div>
   <div class="main">
     <div class="topbar" id="topbar"></div>
-    <div class="tabs" id="tabs"></div>
     <div class="content">
 
-      <div class="subtabs">
-        <button class="env active" onclick="showPanel('goalsPanel', this)">Environmental Goals</button>
-        <button class="env" onclick="showPanel('factorsPanel', this)">Emission Factors</button>
-        <button class="env" onclick="showPanel('productsPanel', this)">Product ESG Profiles</button>
-        <button class="env" onclick="showPanel('carbonPanel', this)">Carbon Transactions</button>
+      <div class="subtabs" style="display:flex; gap:8px; margin-bottom:24px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+        <button class="btn btn-outline env active" onclick="showPanel('goalsPanel', this)" style="border-radius:20px"><i data-lucide="target" class="icon"></i> Goals</button>
+        <button class="btn btn-outline env" onclick="showPanel('factorsPanel', this)" style="border-radius:20px"><i data-lucide="activity" class="icon"></i> Factors</button>
+        <button class="btn btn-outline env" onclick="showPanel('productsPanel', this)" style="border-radius:20px"><i data-lucide="package" class="icon"></i> Products</button>
+        <button class="btn btn-outline env" onclick="showPanel('carbonPanel', this)" style="border-radius:20px"><i data-lucide="database" class="icon"></i> Transactions</button>
       </div>
 
-      <div class="flex-between" style="margin-bottom:20px;">
+      <div class="flex-between mb-4">
         <div></div>
         <div>
-          <button class="btn btn-outline" style="margin-right:10px;" onclick="document.getElementById('csvFileInput').click()">📥 Import ERP Data (CSV)</button>
+          <button class="btn btn-outline" onclick="document.getElementById('csvFileInput').click()">
+            <i data-lucide="download" class="icon"></i> Import ERP Data (CSV)
+          </button>
           <input type="file" id="csvFileInput" style="display:none;" accept=".csv" onchange="uploadCsv(this)">
         </div>
       </div>
 
       <!-- Environmental Goals -->
       <div id="goalsPanel" class="panel active">
-        <div class="toolbar">
-          <button class="btn btn-green" onclick="openGoalModal()">+ New Goal</button>
-          <button class="btn btn-outline" onclick="loadGoals()">⟳ Refresh</button>
-          <input class="search" placeholder="Search goals..." oninput="filterTable('goalsTable', this.value)">
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Name</th><th>Department</th><th>Target CO2</th><th>Current CO2</th><th>Progress</th><th>Deadline</th><th>Status</th><th></th></tr></thead>
-            <tbody id="goalsTable"><tr><td colspan="8" class="empty-state">Loading...</td></tr></tbody>
-          </table>
+        <div class="card fade-in">
+          <div class="flex-between mb-4">
+            <div class="flex-center">
+              <button class="btn btn-env" onclick="openGoalModal()"><i data-lucide="plus" class="icon"></i> New Goal</button>
+              <button class="btn btn-outline" onclick="loadGoals()"><i data-lucide="refresh-cw" class="icon"></i></button>
+            </div>
+            <div class="global-search" style="width:250px">
+              <i data-lucide="search" class="icon"></i>
+              <input type="text" placeholder="Search goals..." oninput="filterTable('goalsTable', this.value)">
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Name</th><th>Department</th><th>Target CO2</th><th>Current CO2</th><th>Progress</th><th>Deadline</th><th>Status</th><th></th></tr></thead>
+              <tbody id="goalsTable"><tr><td colspan="8" class="text-muted text-center" style="padding:40px">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- Emission Factors -->
-      <div id="factorsPanel" class="panel">
-        <div class="toolbar">
-          <button class="btn btn-green" onclick="openFactorModal()">+ New Emission Factor</button>
-          <input class="search" placeholder="Search..." oninput="filterTable('factorsTable', this.value)">
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Name</th><th>Source Type</th><th>Unit</th><th>CO2 Factor</th><th>Status</th><th></th></tr></thead>
-            <tbody id="factorsTable"><tr><td colspan="5" class="empty-state">Loading...</td></tr></tbody>
-          </table>
+      <div id="factorsPanel" class="panel" style="display:none">
+        <div class="card fade-in">
+          <div class="flex-between mb-4">
+            <button class="btn btn-env" onclick="openFactorModal()"><i data-lucide="plus" class="icon"></i> New Factor</button>
+            <div class="global-search" style="width:250px">
+              <i data-lucide="search" class="icon"></i>
+              <input type="text" placeholder="Search..." oninput="filterTable('factorsTable', this.value)">
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Name</th><th>Source Type</th><th>Unit</th><th>CO2 Factor</th><th>Status</th></tr></thead>
+              <tbody id="factorsTable"><tr><td colspan="5" class="text-muted text-center" style="padding:40px">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- Product ESG Profiles -->
-      <div id="productsPanel" class="panel">
-        <div class="toolbar">
-          <button class="btn btn-green" onclick="openProductModal()">+ New Product Profile</button>
-          <input class="search" placeholder="Search..." oninput="filterTable('productsTable', this.value)">
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Product</th><th>Category</th><th>CO2 / Unit</th><th>Notes</th><th></th></tr></thead>
-            <tbody id="productsTable"><tr><td colspan="4" class="empty-state">Loading...</td></tr></tbody>
-          </table>
+      <div id="productsPanel" class="panel" style="display:none">
+        <div class="card fade-in">
+          <div class="flex-between mb-4">
+            <button class="btn btn-env" onclick="openProductModal()"><i data-lucide="plus" class="icon"></i> New Product Profile</button>
+            <div class="global-search" style="width:250px">
+              <i data-lucide="search" class="icon"></i>
+              <input type="text" placeholder="Search..." oninput="filterTable('productsTable', this.value)">
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Product</th><th>Category</th><th>CO2 / Unit</th><th>Notes</th></tr></thead>
+              <tbody id="productsTable"><tr><td colspan="4" class="text-muted text-center" style="padding:40px">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <!-- Carbon Transactions -->
-      <div id="carbonPanel" class="panel">
-        <div class="toolbar">
-          <button class="btn btn-green" onclick="openCarbonModal()">+ Log Carbon Data</button>
-          <input class="search" placeholder="Search..." oninput="filterTable('carbonTable', this.value)">
-        </div>
-        <p class="muted" style="margin-top:-6px;">Carbon Transactions are auto-generated from Purchase / Manufacturing / Expenses / Fleet records when Auto Emission Calculation is enabled in Settings.</p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Date</th><th>Department</th><th>Source</th><th>Factor Used</th><th>Quantity</th><th>CO2 (t)</th><th>Auto?</th></tr></thead>
-            <tbody id="carbonTable"><tr><td colspan="7" class="empty-state">Loading...</td></tr></tbody>
-          </table>
+      <div id="carbonPanel" class="panel" style="display:none">
+        <div class="card fade-in">
+          <div class="flex-between mb-4">
+            <button class="btn btn-env" onclick="openCarbonModal()"><i data-lucide="plus" class="icon"></i> Log Carbon Data</button>
+            <div class="global-search" style="width:250px">
+              <i data-lucide="search" class="icon"></i>
+              <input type="text" placeholder="Search..." oninput="filterTable('carbonTable', this.value)">
+            </div>
+          </div>
+          <p class="text-muted mb-4" style="font-size:13px"><i data-lucide="info" class="icon" style="width:14px;height:14px;vertical-align:middle"></i> Carbon Transactions are auto-generated from Purchase / Manufacturing / Expenses / Fleet records.</p>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Date</th><th>Department</th><th>Source</th><th>Factor Used</th><th>Quantity</th><th>CO2 (t)</th><th>Auto?</th></tr></thead>
+              <tbody id="carbonTable"><tr><td colspan="7" class="text-muted text-center" style="padding:40px">Loading...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -90,79 +114,84 @@
   </div>
 </div>
 
-<!-- Goal Modal -->
-<div class="modal-backdrop" id="goalModal">
-  <div class="modal">
-    <h3>New Environmental Goal</h3>
+<!-- Modals -->
+<div class="modal-backdrop" id="goalModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:480px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="target" class="icon color-env"></i> New Environmental Goal</h3>
     <form id="goalForm">
-      <div class="form-row"><label>Name</label><input name="name" required></div>
-      <div class="form-row"><label>Department</label><select name="department_id" id="goalDept" required></select></div>
-      <div class="form-row"><label>Target CO2 (t)</label><input type="number" step="0.01" name="target_co2" required></div>
-      <div class="form-row"><label>Current CO2 (t)</label><input type="number" step="0.01" name="current_co2" value="0"></div>
-      <div class="form-row"><label>Deadline</label><input type="date" name="deadline" required></div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-green">Save</button>
+      <div class="form-group"><label class="form-label">Name</label><input class="form-control" name="name" required></div>
+      <div class="form-group"><label class="form-label">Department</label><select class="form-control" name="department_id" id="goalDept" required></select></div>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Target CO2 (t)</label><input class="form-control" type="number" step="0.01" name="target_co2" required></div>
+        <div class="form-group"><label class="form-label">Current CO2 (t)</label><input class="form-control" type="number" step="0.01" name="current_co2" value="0"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Deadline</label><input class="form-control" type="date" name="deadline" required></div>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('goalModal')">Cancel</button>
+        <button type="submit" class="btn btn-env">Save Goal</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Emission Factor Modal -->
-<div class="modal-backdrop" id="factorModal">
-  <div class="modal">
-    <h3>New Emission Factor</h3>
+<div class="modal-backdrop" id="factorModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:480px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="activity" class="icon color-env"></i> New Emission Factor</h3>
     <form id="factorForm">
-      <div class="form-row"><label>Name</label><input name="name" required></div>
-      <div class="form-row"><label>Source Type</label>
-        <select name="source_type" required>
+      <div class="form-group"><label class="form-label">Name</label><input class="form-control" name="name" required></div>
+      <div class="form-group"><label class="form-label">Source Type</label>
+        <select class="form-control" name="source_type" required>
           <option>Purchase</option><option>Manufacturing</option><option>Expense</option><option>Fleet</option>
         </select>
       </div>
-      <div class="form-row"><label>Unit (e.g. kg, litre, kWh)</label><input name="unit" required></div>
-      <div class="form-row"><label>CO2 Factor (per unit)</label><input type="number" step="0.001" name="co2_factor" required></div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-green">Save</button>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Unit (e.g. kg, litre)</label><input class="form-control" name="unit" required></div>
+        <div class="form-group"><label class="form-label">CO2 Factor</label><input class="form-control" type="number" step="0.001" name="co2_factor" required></div>
+      </div>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('factorModal')">Cancel</button>
+        <button type="submit" class="btn btn-env">Save Factor</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Product Modal -->
-<div class="modal-backdrop" id="productModal">
-  <div class="modal">
-    <h3>New Product ESG Profile</h3>
+<div class="modal-backdrop" id="productModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:480px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="package" class="icon color-env"></i> New Product Profile</h3>
     <form id="productForm">
-      <div class="form-row"><label>Product Name</label><input name="product_name" required></div>
-      <div class="form-row"><label>Category</label><input name="category"></div>
-      <div class="form-row"><label>CO2 per Unit</label><input type="number" step="0.01" name="co2_per_unit"></div>
-      <div class="form-row"><label>Notes</label><textarea name="notes"></textarea></div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-green">Save</button>
+      <div class="form-group"><label class="form-label">Product Name</label><input class="form-control" name="product_name" required></div>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Category</label><input class="form-control" name="category"></div>
+        <div class="form-group"><label class="form-label">CO2 per Unit</label><input class="form-control" type="number" step="0.01" name="co2_per_unit"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Notes</label><textarea class="form-control" name="notes" rows="3"></textarea></div>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('productModal')">Cancel</button>
+        <button type="submit" class="btn btn-env">Save Profile</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Carbon Transaction Modal -->
-<div class="modal-backdrop" id="carbonModal">
-  <div class="modal">
-    <h3>Log Carbon Data</h3>
+<div class="modal-backdrop" id="carbonModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+  <div class="card slide-up" style="width:480px; max-width:90vw;">
+    <h3 class="mt-0 mb-4 flex-center" style="justify-content:flex-start"><i data-lucide="database" class="icon color-env"></i> Log Carbon Data</h3>
     <form id="carbonForm">
-      <div class="form-row"><label>Department</label><select name="department_id" id="carbonDept" required></select></div>
-      <div class="form-row"><label>Source Type</label>
-        <select name="source_type" required>
-          <option>Purchase</option><option>Manufacturing</option><option>Expense</option><option>Fleet</option>
-        </select>
+      <div class="form-group"><label class="form-label">Department</label><select class="form-control" name="department_id" id="carbonDept" required></select></div>
+      <div class="grid grid-2 gap-4">
+        <div class="form-group"><label class="form-label">Source Type</label>
+          <select class="form-control" name="source_type" required>
+            <option>Purchase</option><option>Manufacturing</option><option>Expense</option><option>Fleet</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Emission Factor</label><select class="form-control" name="emission_factor_id" id="carbonFactor"></select></div>
       </div>
-      <div class="form-row"><label>Emission Factor</label><select name="emission_factor_id" id="carbonFactor"></select></div>
-      <div class="form-row"><label>Quantity</label><input type="number" step="0.01" name="quantity" required></div>
-      <div class="form-row"><label>Remarks</label><input name="remarks"></div>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-green">Save</button>
+      <div class="form-group"><label class="form-label">Quantity</label><input class="form-control" type="number" step="0.01" name="quantity" required></div>
+      <div class="form-group"><label class="form-label">Remarks</label><input class="form-control" name="remarks"></div>
+      <div class="flex-center mt-4" style="justify-content:flex-end">
         <button type="button" class="btn btn-outline" onclick="closeModal('carbonModal')">Cancel</button>
+        <button type="submit" class="btn btn-env">Save Data</button>
       </div>
     </form>
   </div>
@@ -170,8 +199,24 @@
 
 <script src="app.js"></script>
 <script>
-renderShell("environmental.html", "Environmental");
+renderShell("environmental.html", "Environmental Module");
 let DEPARTMENTS = [];
+
+function showPanel(name, btnEl) {
+  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+  document.getElementById(name).style.display = 'block';
+  document.querySelectorAll('.subtabs button').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = 'transparent';
+    b.style.color = 'var(--text-primary)';
+  });
+  btnEl.classList.add('active');
+  btnEl.style.background = 'var(--env-bg)';
+  btnEl.style.color = 'var(--env)';
+  btnEl.style.borderColor = 'var(--env)';
+}
+// Init first subtab
+document.querySelector('.subtabs button').click();
 
 function filterTable(tbodyId, query) {
   const q = query.toLowerCase();
@@ -195,75 +240,94 @@ async function loadFactorsIntoSelect() {
   return factors;
 }
 
-function statusPill(status) {
-  const map = { Active: "green", "On Track": "blue", Completed: "green", Draft: "gray", Overdue: "red" };
-  return `<span class="pill pill-${map[status] || 'gray'}">${esc(status)}</span>`;
+function statusBadge(status) {
+  const map = { Active: "success", "On Track": "info", Completed: "success", Draft: "warning", Overdue: "error" };
+  return `<span class="badge badge-${map[status] || 'info'}">${esc(status)}</span>`;
 }
 
 async function loadGoals() {
   const goals = await api("/environmental-goals");
   const tbody = document.getElementById("goalsTable");
-  if (!goals.length) { tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No goals yet.</td></tr>`; return; }
+  if (!goals.length) { tbody.innerHTML = `<tr><td colspan="8" class="text-muted text-center" style="padding:40px">No goals yet.</td></tr>`; return; }
   tbody.innerHTML = goals.map(g => {
     const dept = DEPARTMENTS.find(d => d.id === g.department_id);
-    const pct = g.target_co2 ? Math.min(100, Math.round((1 - g.current_co2 / g.target_co2) * 100)) : 0;
+    const pct = g.target_co2 ? Math.min(100, Math.round((g.current_co2 / g.target_co2) * 100)) : 0;
     return `<tr>
-      <td>${esc(g.name)}</td>
+      <td style="font-weight:500; color:var(--text-primary)">${esc(g.name)}</td>
       <td>${dept ? esc(dept.name) : '-'}</td>
       <td>${g.target_co2} t</td>
       <td>${g.current_co2} t</td>
       <td style="min-width:140px;">
-        <div class="progress-bar"><div style="width:${Math.max(pct,0)}%;"></div></div>
-        <span class="muted" style="font-size:11px;">${Math.max(pct,0)}%</span>
+        <div style="background:var(--border); height:6px; border-radius:3px; margin-bottom:4px; overflow:hidden">
+          <div style="width:${Math.max(pct,0)}%; background:var(--env); height:100%; border-radius:3px"></div>
+        </div>
+        <span class="text-muted" style="font-size:11px;">${Math.max(pct,0)}% Complete</span>
       </td>
       <td>${fmtDate(g.deadline)}</td>
-      <td>${statusPill(g.status)}</td>
-      <td><button class="btn btn-red btn-sm" onclick="deleteRow('environmental-goals', ${g.id}, loadGoals)">Delete</button></td>
+      <td>${statusBadge(g.status)}</td>
+      <td>
+        <button class="topbar-btn" style="width:28px;height:28px;color:var(--error)" onclick="deleteRow('environmental-goals', ${g.id}, loadGoals)">
+          <i data-lucide="trash-2" class="icon" style="width:14px;height:14px"></i>
+        </button>
+      </td>
     </tr>`;
   }).join("");
+  lucide.createIcons();
 }
 
 async function loadFactors() {
   const factors = await api("/emission-factors");
   const tbody = document.getElementById("factorsTable");
-  if (!factors.length) { tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No emission factors yet.</td></tr>`; return; }
+  if (!factors.length) { tbody.innerHTML = `<tr><td colspan="5" class="text-muted text-center" style="padding:40px">No emission factors yet.</td></tr>`; return; }
   tbody.innerHTML = factors.map(f => `<tr>
-    <td>${esc(f.name)}</td><td>${esc(f.source_type)}</td><td>${esc(f.unit)}</td><td>${f.co2_factor}</td>
-    <td>${statusPill(f.status)}</td>
+    <td style="font-weight:500; color:var(--text-primary)">${esc(f.name)}</td>
+    <td>${esc(f.source_type)}</td><td>${esc(f.unit)}</td>
+    <td style="font-weight:600">${f.co2_factor}</td>
+    <td>${statusBadge(f.status)}</td>
   </tr>`).join("");
 }
 
 async function loadProducts() {
   const products = await api("/product-profiles");
   const tbody = document.getElementById("productsTable");
-  if (!products.length) { tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No product profiles yet.</td></tr>`; return; }
+  if (!products.length) { tbody.innerHTML = `<tr><td colspan="4" class="text-muted text-center" style="padding:40px">No product profiles yet.</td></tr>`; return; }
   tbody.innerHTML = products.map(p => `<tr>
-    <td>${esc(p.product_name)}</td><td>${esc(p.category)}</td><td>${p.co2_per_unit ?? '-'}</td><td>${esc(p.notes)}</td>
+    <td style="font-weight:500; color:var(--text-primary)">${esc(p.product_name)}</td>
+    <td><span class="badge badge-info">${esc(p.category)}</span></td>
+    <td style="font-weight:600">${p.co2_per_unit ?? '-'}</td>
+    <td>${esc(p.notes)}</td>
   </tr>`).join("");
 }
 
 async function loadCarbon() {
   const txns = await api("/carbon-transactions");
   const tbody = document.getElementById("carbonTable");
-  if (!txns.length) { tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No carbon transactions yet.</td></tr>`; return; }
+  if (!txns.length) { tbody.innerHTML = `<tr><td colspan="7" class="text-muted text-center" style="padding:40px">No carbon transactions yet.</td></tr>`; return; }
   tbody.innerHTML = txns.map(t => `<tr>
-    <td>${fmtDate(t.date)}</td><td>${esc(t.department_name || '-')}</td><td>${esc(t.source_type)}</td>
-    <td>${esc(t.emission_factor_name || 'Manual')}</td><td>${t.quantity}</td><td>${t.amount_co2}</td>
-    <td>${t.auto_generated ? '✅' : '—'}</td>
+    <td>${fmtDate(t.date)}</td>
+    <td>${esc(t.department_name || '-')}</td>
+    <td>${esc(t.source_type)}</td>
+    <td>${esc(t.emission_factor_name || 'Manual')}</td>
+    <td>${t.quantity}</td>
+    <td style="font-weight:600; color:var(--text-primary)">${t.amount_co2}</td>
+    <td>${t.auto_generated ? '<i data-lucide="check-circle" class="icon color-env"></i>' : '<span class="text-muted">—</span>'}</td>
   </tr>`).join("");
+  lucide.createIcons();
 }
 
 async function deleteRow(endpoint, id, reload) {
   if (!confirm("Delete this record?")) return;
   await api(`/${endpoint}/${id}`, { method: "DELETE" });
-  toast("Deleted");
+  toast("Deleted successfully");
   reload();
 }
 
-function openGoalModal() { openModal("goalModal"); }
-function openFactorModal() { openModal("factorModal"); }
-function openProductModal() { openModal("productModal"); }
-function openCarbonModal() { openModal("carbonModal"); }
+function openModal(id) { document.getElementById(id).style.display = "flex"; }
+function closeModal(id) { document.getElementById(id).style.display = "none"; }
+window.openGoalModal = () => openModal("goalModal");
+window.openFactorModal = () => openModal("factorModal");
+window.openProductModal = () => openModal("productModal");
+window.openCarbonModal = () => openModal("carbonModal");
 
 document.getElementById("goalForm").addEventListener("submit", async e => {
   e.preventDefault();
@@ -307,22 +371,17 @@ async function uploadCsv(input) {
   if (!input.files[0]) return;
   const formData = new FormData();
   formData.append("file", input.files[0]);
-
   try {
     toast("Uploading and parsing CSV...");
-    const res = await fetch("/api/transactions/import", {
-      method: "POST",
-      body: formData
-    });
+    const res = await fetch("/api/transactions/import", { method: "POST", body: formData });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Upload failed");
-    
     toast(data.message);
     loadCarbon();
   } catch(e) {
     toast(e.message, true);
   }
-  input.value = ""; // reset
+  input.value = "";
 }
 
 (async function init() {
